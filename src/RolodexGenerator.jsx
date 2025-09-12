@@ -28,6 +28,15 @@ const RolodexGenerator = () => {
     secondaryColor: "#10b981",
     accentColor: "#000",
     showSearch: true,    
+    accordionItems: [
+      {
+        title: "",
+        header: "",
+        text: "",
+        embedVideo: false,
+        embedCode: ""
+      }
+    ]
   });
 
   
@@ -82,6 +91,13 @@ const RolodexGenerator = () => {
   library(shinyMobile)
 
   ui <- f7Page(
+    # Add custom CSS
+    tags$style(HTML("
+      .toolbar {
+        width: 125% !important;
+      }
+    ")),
+    
     title = "${appTitle}",
     options = list(dark = FALSE),
     f7TabLayout(
@@ -168,7 +184,7 @@ const RolodexGenerator = () => {
               tagList(
                 if ("Address" %in% names(items)) items[i, "Address"],
                 if ("Phone" %in% names(items)) br(),
-                if ("Phone" %in% names(items)) f7Link(href = paste0("tel:", items[i, "Phone"]), label = items[i, "Phone"]),
+                if ("Phone" %in% names(items)) f7Link(href = paste0("Call Now", items[i, "Phone"]), label = items[i, "Phone"]),
                 if ("Hours" %in% names(items)) br(),
                 if ("Hours" %in% names(items)) items[i, "Hours"],
                 if ("Website" %in% names(items)) br(),
@@ -208,33 +224,26 @@ const RolodexGenerator = () => {
   )
   })
 
-  output$welcome <- renderUI({
-      req(input$accordionItems)  # make sure the user has set accordion items
-
-      tagList(
-        f7Accordion(
-          id = NULL,
-          multiCollapse = TRUE,
-          lapply(seq_along(config$accordionItems), function(i) {
-            item <- config$accordionItems[[i]]
-            
-            # build the content for the f7Block
-            blockContent <- tagList(
-              if (!is.null(item$header) && item$header != "") h3(item$header),
-              if (!is.null(item$text) && item$text != "") p(item$text),
-              if (!is.null(item$embedVideo) && item$embedVideo && item$embedCode != "") HTML(item$embedCode)
-            )
-            
+    output$welcome <- renderUI({
+        tagList(
+          f7Accordion(
+            id = NULL,
+            multiCollapse = TRUE,
+            ${config.accordionItems.map((item, i) => `
             f7AccordionItem(
-              title = if (!is.null(item$title) && item$title != "") item$title else paste("Accordion", i),
+              title = "${item.title || `Accordion ${i + 1}`}",
               f7Block(
-                blockContent
+                tagList(
+                  ${item.header ? `h3("${item.header}"),` : ''}
+                  ${item.text ? `p("${item.text}"),` : ''}
+                  ${item.embedVideo && item.embedCode ? `HTML('${item.embedCode.replace(/'/g, "\\'")}')` : ''}
+                )
               )
-            )
-          })
+            )${i < config.accordionItems.length - 1 ? ',' : ''}`).join('')}
+          )
         )
-      )
-    })
+      })
+    
 
   }
 
@@ -527,7 +536,7 @@ const RolodexGenerator = () => {
                     Number of Accordion Items (max 5)
                   </label>
                   <select
-                    value={config.accordionItems?.length || 1}
+                    value={config.accordionItems?.length || 2}
                     onChange={(e) => {
                       const count = parseInt(e.target.value, 10);
                       const newItems = Array.from({ length: count }, (_, i) => 
