@@ -4,6 +4,7 @@ import {
   Download,
   FileText,
   Palette,
+  Smartphone,
   Database,
   Code,
   CheckCircle2,
@@ -17,7 +18,7 @@ const RolodexGenerator = () => {
   const [csvData, setCsvData] = useState(null);
   const [csvColumns, setCsvColumns] = useState([]);
   const [config, setConfig] = useState({
-    appTitle: "My Resource Hub",
+    appTitle: "My Resource Rolodex",
     titleColumn: "",
     descriptionColumn: "",
     categoryColumn: "",
@@ -25,17 +26,11 @@ const RolodexGenerator = () => {
     theme: "flatly",
     primaryColor: "#2563eb",
     secondaryColor: "#10b981",
-    showSearch: true,
-    showFilters: true,
+    accentColor: "#000",
+    showSearch: true,    
   });
 
-  const themes = [
-    "cerulean", "cosmo", "cyborg", "darkly", "flatly", "journal",
-    "litera", "lumen", "lux", "materia", "minty", "morph",
-    "pulse", "quartz", "sandstone", "simplex", "sketchy",
-    "slate", "solar", "spacelab", "superhero", "united", "vapor", "yeti"
-  ];
-
+  
   // --- Handle CSV Upload ---
   const handleFileUpload = useCallback((event) => {
     const file = event.target.files[0];
@@ -70,7 +65,182 @@ const RolodexGenerator = () => {
   }, []);
 
   // --- Placeholder Code Generation ---
-  const generateAppCode = () => `# Shiny app code placeholder`;
+  const generateAppCode = () => {
+    const {
+      appTitle,
+      titleColumn,
+      descriptionColumn,
+      categoryColumn,
+      urlColumn,
+      telephoneColumn,
+      addressColumn,
+      hoursColumn,
+    } = config;
+
+    return `
+  library(shiny)
+  library(shinyMobile)
+
+  ui <- f7Page(
+    title = "${appTitle}",
+    options = list(dark = FALSE),
+    f7TabLayout(
+      navbar = f7Navbar(title = "${appTitle}"),
+      f7Tabs(
+        animated = TRUE,
+        id = "tab",
+
+        # Home Page Tab -----------------------------------------------------------
+
+
+          f7Tab(
+            tabName = "WelcomeTab",
+            icon = f7Icon("house_fill"),
+            active = TRUE,
+            f7Block(
+              f7Shadow(
+                intensity = 5,
+                hover = TRUE,
+                f7Card(title="Welcome to ${appTitle}",
+                       uiOutput("welcome"),
+                       hairlines = F, strong = T, inset =
+                         F, tablet = FALSE))),
+            f7Block(
+              f7Shadow(
+                intensity = 5,
+                hover = TRUE,
+                f7Card(title="Adding the app to your device",
+                       uiOutput("installapp"),
+                       footer=f7Button(inputId ="helppopup", label = "Quick Introduction", color= "darkorchid3", fill=T, shadow=T, rounded = T, size = "small"),
+                       hairlines = F, strong = T, inset =
+                         F, tablet = FALSE))),
+
+          ),
+
+        # Search Tab -----------------------------------------------------------
+        f7Tab(
+          tabName = "Resources",
+          icon = f7Icon("search"),
+          active = TRUE,
+
+          f7Shadow(
+            intensity = 5,
+            hover = TRUE,
+            f7Card(
+              title = "Select a resource category below",
+              uiOutput("selector"),
+            )
+          ),
+
+          uiOutput("accordions")
+        )
+      )
+    )
+  )
+
+  server <- function(input, output, session) {
+    resources <- read.csv("resources.csv", stringsAsFactors = FALSE)
+
+    output$selector <- renderUI({
+      tagList(
+        f7SmartSelect(
+          inputId = "category",
+          label = NULL,
+          choices = sort(unique(resources$Type)),
+          selected = NULL,
+          type = "popup"
+        )
+      )
+    })
+
+    output$accordions <- renderUI({
+      req(input$category)
+      items <- subset(resources, Type == input$category)
+      if (nrow(items) == 0) return(NULL)
+
+      f7Accordion(
+        id = paste0("acc_", gsub("\\\\s", "_", input$category)),
+        multiCollapse = TRUE,
+        lapply(seq_len(nrow(items)), function(i) {
+          f7AccordionItem(
+            title = items[i, "Name"],
+            f7Block(
+              tagList(
+                if ("Address" %in% names(items)) items[i, "Address"],
+                if ("Phone" %in% names(items)) br(),
+                if ("Phone" %in% names(items)) f7Link(href = paste0("tel:", items[i, "Phone"]), label = items[i, "Phone"]),
+                if ("Hours" %in% names(items)) br(),
+                if ("Hours" %in% names(items)) items[i, "Hours"],
+                if ("Website" %in% names(items)) br(),
+                if ("Website" %in% names(items)) f7Link(href = items[i, "Website"], label = items[i, "Website"]),
+                br(), br(),
+                if ("Info" %in% names(items)) items[i, "Info"]
+              )
+            )
+          )
+        })
+      )
+    })
+
+  # Install App Instructions Card -------------------------------------------
+    output$installapp <- renderUI({
+      tagList(
+      f7Accordion(id=NULL,
+                  f7AccordionItem(title = "iPhone", open=F, multiCollapse=F,
+                                  f7Block(br(),
+                                          h4("Step 1: Open the website in Safari"),
+                                          h4("Step 2: Tap the share button", f7Icon("square_arrow_up"), "at the bottom of the screen"),
+                                          h4("Step 3: Scroll down and click 'Add to Home Screen'"),
+                                          h4("Step 4: Find the ACCESS app on your homescreen and open up the app"),
+                                          f7Align(div(f7Link("Instructions with screenshots", href="https://www.cdc.gov/niosh/mining/content/hearingloss/installPWA.html")),side=c("center")))),
+
+
+                  f7AccordionItem(title = "Android", open=F, multiCollapse=F,
+                                  f7Block(br(),
+                                          h4("Step 1: Open the website in Chrome"),
+                                          h4("Step 2: Tap the menu in the upper right corner of the screen"),
+                                          h4("Step 3: Scroll down and click 'Add to Home Screen', change the name to 'ACCESS'"),
+                                          h4("Step 4: Find the ACCESS app on your homescreen and open up the app"),
+                                          f7Align(div(f7Link("Instructions with screenshots", href="https://www.cdc.gov/niosh/mining/content/hearingloss/installPWA.html")),side=c("center"))
+
+                                          )))
+
+  )
+  })
+
+  output$welcome <- renderUI({
+      req(input$accordionItems)  # make sure the user has set accordion items
+
+      tagList(
+        f7Accordion(
+          id = NULL,
+          multiCollapse = TRUE,
+          lapply(seq_along(config$accordionItems), function(i) {
+            item <- config$accordionItems[[i]]
+            
+            # build the content for the f7Block
+            blockContent <- tagList(
+              if (!is.null(item$header) && item$header != "") h3(item$header),
+              if (!is.null(item$text) && item$text != "") p(item$text),
+              if (!is.null(item$embedVideo) && item$embedVideo && item$embedCode != "") HTML(item$embedCode)
+            )
+            
+            f7AccordionItem(
+              title = if (!is.null(item$title) && item$title != "") item$title else paste("Accordion", i),
+              f7Block(
+                blockContent
+              )
+            )
+          })
+        )
+      )
+    })
+
+  }
+
+  shinyApp(ui, server)
+  `;
+  };
 
   const downloadApp = () => {
     const code = generateAppCode();
@@ -86,8 +256,9 @@ const RolodexGenerator = () => {
   const steps = [
     { number: 1, title: "Upload Data", icon: Upload, description: "Import your CSV file" },
     { number: 2, title: "Map Fields", icon: Database, description: "Configure data columns" },
-    { number: 3, title: "Customize", icon: Palette, description: "Style your app" },
-    { number: 4, title: "Generate", icon: Code, description: "Download your app" },
+    { number: 3, title: "Home Screen", icon: Smartphone, description: "Welcome your users" },
+    { number: 4, title: "Customize", icon: Palette, description: "Style your app" },
+    { number: 5, title: "Generate", icon: Code, description: "Download your app" },
   ];
 
   return (
@@ -191,8 +362,13 @@ const RolodexGenerator = () => {
                 <h2 className="text-2xl font-bold text-gray-900 mb-3">
                   Upload Your CSV File
                 </h2>
-                <p className="text-gray-600 max-w-md mx-auto">
+                <p className="text-gray-600 max-w-md mx-auto mb-4">
                   Start by uploading a CSV file with your data. The first row should contain column headers.
+                </p>
+                <p className="text-sm text-blue-600 underline">
+                  <a href="/rolodex_example.csv" download>
+                    Download example CSV (use same columns and coding)
+                  </a>
                 </p>
               </div>
 
@@ -242,33 +418,28 @@ const RolodexGenerator = () => {
                     <Eye className="w-4 h-4 mr-2" />
                     Data Preview
                   </h3>
-                  <div className="bg-white rounded-lg border overflow-hidden">
-                    <table className="w-full text-sm">
+                  <div className="bg-white rounded-lg border overflow-x-auto">
+                    <table className="min-w-max text-sm">
                       <thead className="bg-gray-50">
                         <tr>
-                          {csvColumns.slice(0, 4).map((col, idx) => (
-                            <th key={idx} className="px-4 py-3 text-left font-medium text-gray-700 border-b">
+                          {csvColumns.map((col, idx) => (
+                            <th
+                              key={idx}
+                              className="px-4 py-3 text-left font-medium text-gray-700 border-b"
+                            >
                               {col}
                             </th>
                           ))}
-                          {csvColumns.length > 4 && (
-                            <th className="px-4 py-3 text-left font-medium text-gray-500">
-                              +{csvColumns.length - 4} more
-                            </th>
-                          )}
                         </tr>
                       </thead>
                       <tbody>
                         {csvData.slice(0, 3).map((row, idx) => (
                           <tr key={idx} className="border-b border-gray-100 last:border-0">
-                            {csvColumns.slice(0, 4).map((col, colIdx) => (
+                            {csvColumns.map((col, colIdx) => (
                               <td key={colIdx} className="px-4 py-3 text-gray-600">
                                 {row[col] || "—"}
                               </td>
                             ))}
-                            {csvColumns.length > 4 && (
-                              <td className="px-4 py-3 text-gray-400">...</td>
-                            )}
                           </tr>
                         ))}
                       </tbody>
@@ -279,10 +450,13 @@ const RolodexGenerator = () => {
                 {/* Column Mapping */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
-                    { key: "titleColumn", label: "Title Column", desc: "Main heading for each item" },
-                    { key: "descriptionColumn", label: "Description Column", desc: "Detailed information" },
+                    { key: "titleColumn", label: "Resource Name Column", desc: "Main heading for each item" },
+                    { key: "addressColumn", label: "Physical Address Column", desc: "Links to resources" },
+                    { key: "telephoneColumn", label: "Telephone Number Column", desc: "Links to resources" },
+                    { key: "urlColumn", label: "Website Column", desc: "Links to resources" },
+                    { key: "hoursColumn", label: "Operating Hours Column", desc: "Links to resources" },
                     { key: "categoryColumn", label: "Category Column", desc: "For filtering and grouping" },
-                    { key: "urlColumn", label: "URL Column", desc: "Links to resources" },
+                    { key: "descriptionColumn", label: "Description Column", desc: "Detailed information" },
                   ].map((field) => (
                     <div key={field.key} className="space-y-2">
                       <label className="block">
@@ -319,7 +493,7 @@ const RolodexGenerator = () => {
             </div>
           )}
 
-          {/* Step 3: Customization */}
+          {/* Step 3: Build HomeScreen */}
           {currentStep === 3 && (
             <div className="p-8">
               <div className="text-center mb-8">
@@ -327,11 +501,9 @@ const RolodexGenerator = () => {
                   <Settings className="w-7 h-7 text-emerald-600" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                  Customize Your App
+                  Customize Your Home Screen
                 </h2>
-                <p className="text-gray-600">
-                  Configure the appearance and features of your Shiny application
-                </p>
+                <p className="text-gray-600">Configure the home screen of your app</p>
               </div>
 
               <div className="max-w-2xl mx-auto space-y-8">
@@ -349,28 +521,164 @@ const RolodexGenerator = () => {
                   />
                 </div>
 
-                {/* Theme Selection */}
+                {/* Accordion Settings */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Bootstrap Theme
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Number of Accordion Items (max 5)
                   </label>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-                    {themes.map((theme) => (
-                      <button
-                        key={theme}
-                        onClick={() => setConfig({ ...config, theme })}
-                        className={`px-3 py-2 text-xs font-medium rounded-md border transition-all ${
-                          config.theme === theme
-                            ? "bg-blue-600 text-white border-blue-600"
-                            : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
-                        }`}
-                      >
-                        {theme}
-                      </button>
+                  <select
+                    value={config.accordionItems?.length || 1}
+                    onChange={(e) => {
+                      const count = parseInt(e.target.value, 10);
+                      const newItems = Array.from({ length: count }, (_, i) => 
+                        config.accordionItems?.[i] || {
+                          title: "",
+                          header: "",
+                          text: "",
+                          embedVideo: false,
+                          embedCode: ""
+                        }
+                      );
+                      setConfig({ ...config, accordionItems: newItems });
+                    }}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={n}>
+                        {n}
+                      </option>
                     ))}
-                  </div>
+                  </select>
                 </div>
 
+                {/* Render Accordion Item Inputs */}
+                {config.accordionItems?.map((item, index) => (
+                  <div key={index} className="p-4 border rounded-lg bg-gray-50 space-y-4">
+                    <h4 className="font-semibold text-gray-800">
+                      Accordion Item {index + 1}
+                    </h4>
+
+                    <input
+                      type="text"
+                      value={item.title}
+                      onChange={(e) => {
+                        const updated = [...config.accordionItems];
+                        updated[index].title = e.target.value;
+                        setConfig({ ...config, accordionItems: updated });
+                      }}
+                      placeholder="Accordion Title"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    />
+
+                    <input
+                      type="text"
+                      value={item.header}
+                      onChange={(e) => {
+                        const updated = [...config.accordionItems];
+                        updated[index].header = e.target.value;
+                        setConfig({ ...config, accordionItems: updated });
+                      }}
+                      placeholder="Header"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    />
+
+                    <textarea
+                      value={item.text}
+                      onChange={(e) => {
+                        const updated = [...config.accordionItems];
+                        updated[index].text = e.target.value;
+                        setConfig({ ...config, accordionItems: updated });
+                      }}
+                      placeholder="Text Content"
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    />
+
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={item.embedVideo}
+                        onChange={(e) => {
+                          const updated = [...config.accordionItems];
+                          updated[index].embedVideo = e.target.checked;
+                          setConfig({ ...config, accordionItems: updated });
+                        }}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded"
+                      />
+                      <span className="text-sm text-gray-700">Embed YouTube Video</span>
+                    </label>
+
+                    {item.embedVideo && (
+                      <input
+                        type="text"
+                        value={item.embedCode}
+                        onChange={(e) => {
+                          const updated = [...config.accordionItems];
+                          updated[index].embedCode = e.target.value;
+                          setConfig({ ...config, accordionItems: updated });
+                        }}
+                        placeholder="Paste YouTube embed code"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                      />
+                    )}
+                  </div>
+                ))}
+
+                {/* Colors */}
+                {/* (keep your color customization code here) */}
+
+                {/* Navigation */}
+                <div className="flex justify-between pt-6">
+                  <button
+                    onClick={() => setCurrentStep(2)}
+                    className="px-6 py-3 text-gray-600 font-semibold hover:text-gray-700 transition-colors"
+                  >
+                    Back
+                  </button>
+                  <button
+                    onClick={() => setCurrentStep(4)}
+                    className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all"
+                  >
+                    Style App
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+
+          {/* Step 4: Customization */}
+          {currentStep === 4 && (
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-14 h-14 bg-emerald-100 rounded-xl mb-4">
+                  <Settings className="w-7 h-7 text-emerald-600" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                  Customize Your App
+                </h2>
+                <p className="text-gray-600">
+                  Configure the appearance and features of your Shiny application
+                </p>
+              </div>
+
+              <div className="max-w-2xl mx-auto space-y-8">
+                {/* App Title
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Application Title
+                  </label>
+                  <input
+                    type="text"
+                    value={config.appTitle}
+                    onChange={(e) => setConfig({ ...config, appTitle: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="My Resource Hub"
+                  />
+                </div> */}
+
+                
                 {/* Color Customization */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
@@ -411,6 +719,25 @@ const RolodexGenerator = () => {
                       />
                     </div>
                   </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Accent Color
+                    </label>
+                    <div className="flex items-center space-x-3">
+                      <input
+                        type="color"
+                        value={config.accentColor}
+                        onChange={(e) => setConfig({ ...config, accentColor: e.target.value })}
+                        className="w-12 h-10 border border-gray-200 rounded-lg cursor-pointer"
+                      />
+                      <input
+                        type="text"
+                        value={config.accentColor}
+                        onChange={(e) => setConfig({ ...config, accentColor: e.target.value })}
+                        className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Features */}
@@ -421,7 +748,6 @@ const RolodexGenerator = () => {
                   <div className="space-y-3">
                     {[
                       { key: "showSearch", label: "Enable Search", desc: "Allow users to search through items" },
-                      { key: "showFilters", label: "Enable Filters", desc: "Add category filtering options" },
                     ].map((feature) => (
                       <label key={feature.key} className="flex items-start space-x-3 cursor-pointer">
                         <input
@@ -441,13 +767,13 @@ const RolodexGenerator = () => {
 
                 <div className="flex justify-between pt-6">
                   <button
-                    onClick={() => setCurrentStep(2)}
+                    onClick={() => setCurrentStep(3)}
                     className="px-6 py-3 text-gray-600 font-semibold hover:text-gray-700 transition-colors"
                   >
                     Back
                   </button>
                   <button
-                    onClick={() => setCurrentStep(4)}
+                    onClick={() => setCurrentStep(5)}
                     className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all"
                   >
                     Generate App
@@ -458,8 +784,8 @@ const RolodexGenerator = () => {
             </div>
           )}
 
-          {/* Step 4: Generate */}
-          {currentStep === 4 && (
+          {/* Step 5: Generate */}
+          {currentStep === 5 && (
             <div className="p-12 text-center">
               <div className="max-w-md mx-auto">
                 <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
