@@ -375,7 +375,7 @@ const RolodexGenerator = () => {
                   Start by uploading a CSV file with your data. The first row should contain column headers.
                 </p>
                 <p className="text-sm text-blue-600 underline">
-                  <a href="/rolodex_example.csv" download>
+                  <a href="public/rolodex_example.csv" download>
                     Download example CSV (use same columns and coding)
                   </a>
                 </p>
