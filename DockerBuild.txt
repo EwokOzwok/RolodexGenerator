@@ -6,3 +6,7 @@ docker push eeozmat/rologen:dev8001
 
 docker run -d --restart=always -p 8001:80 --name RoloGenerator rologen:dev8001
 
+
+docker pull eeozmat/rologen:dev8001
+docker run -d --restart=always -p 8001:80 --name RoloGenerator eeozmat/rologen:dev8001
+
