@@ -155,7 +155,7 @@ const RolodexGenerator = () => {
   )
 
   server <- function(input, output, session) {
-    resources <- read.csv("resources.csv", stringsAsFactors = FALSE)
+    resources <- read.csv("rolodex.csv", stringsAsFactors = FALSE)
 
     output$selector <- renderUI({
       tagList(
@@ -805,6 +805,9 @@ const RolodexGenerator = () => {
                 </h2>
                 <p className="text-gray-600 mb-8">
                   Your Shiny application has been generated successfully. Download the R file to get started.
+                </p>
+                <p className="text-gray-600 mb-8">
+                  Name your csv "rolodex.csv" and make sure it is in the same directory as your app's .R file
                 </p>
                 <button
                   onClick={downloadApp}
