@@ -45,19 +45,44 @@ const RolodexGenerator = () => {
   // --- Handle CSV Upload ---
   const handleFileUpload = useCallback((event) => {
     const file = event.target.files[0];
-    if (file && file.type === "text/csv") {
+    if (file && (file.type === "text/csv" || file.type === "text/tab-separated-values" || file.name.endsWith('.csv') || file.name.endsWith('.tsv'))) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const text = e.target.result;
-        const lines = text.split("\n");
-        const headers = lines[0]
-          .split(",")
-          .map((h) => h.trim().replace(/"/g, ""));
+        
+        // Detect delimiter - check if first line has tabs or commas
+        const firstLine = text.split("\n")[0];
+        const delimiter = firstLine.includes('\t') ? '\t' : ',';
+        
+        // Proper parsing function that handles quoted fields
+        const parseLine = (line, delim) => {
+          const result = [];
+          let current = '';
+          let inQuotes = false;
+          
+          for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            
+            if (char === '"') {
+              inQuotes = !inQuotes;
+            } else if (char === delim && !inQuotes) {
+              result.push(current.trim());
+              current = '';
+            } else {
+              current += char;
+            }
+          }
+          result.push(current.trim());
+          return result;
+        };
+
+        const lines = text.split("\n").filter(line => line.trim());
+        const headers = parseLine(lines[0], delimiter).map(h => h.replace(/^"|"$/g, ''));
 
         const rows = lines
-          .slice(1) // take everything after the header row
+          .slice(1)
           .map((line) => {
-            const values = line.split(",").map((v) => v.trim().replace(/"/g, ""));
+            const values = parseLine(line, delimiter).map(v => v.replace(/^"|"$/g, ''));
             return headers.reduce((obj, header, index) => {
               obj[header] = values[index] || "";
               return obj;
@@ -71,7 +96,7 @@ const RolodexGenerator = () => {
       };
       reader.readAsText(file);
     } else {
-      alert("Please upload a valid CSV file");
+      alert("Please upload a valid CSV or TSV file");
     }
   }, []);
 
@@ -264,23 +289,16 @@ const RolodexGenerator = () => {
     folder.file("app.R", code);
 
     // 2. Add Docker Build.txt & Dockerfile.txt from /public
-    const dockerBuild = await fetch("/Docker Build.txt").then(r => r.text());
+    const dockerBuild = await fetch("/rolodex_generator/Docker Build.txt").then(r => r.text());
     folder.file("Docker Build.txt", dockerBuild);
 
-    const dockerFile = await fetch("/Dockerfile.txt").then(r => r.text());
+    const dockerFile = await fetch("/rolodex_generator/Dockerfile.txt").then(r => r.text());
     folder.file("Dockerfile.txt", dockerFile);
 
-    // 3. Add user’s uploaded rolodex.csv
-    if (csvData) {
-      // If you stored the raw uploaded CSV text, use that.
-      // Otherwise, rebuild it from csvData + csvColumns:
-      const csvContent = [csvColumns.join(","), ...csvData.map(row =>
-        csvColumns.map(col => row[col] || "").join(",")
-      )].join("\n");
-
-      folder.file("rolodex.csv", csvContent);
-    }
-
+    // 3. Add README file instead of CSV
+    const readmeContent = await fetch("/rolodex_generator/IMPORTANT - README.txt").then(r => r.text());
+    folder.file("IMPORTANT - README.txt", readmeContent);
+    
     // 4. Add www/ folder contents from /public/www
     const wwwFolder = folder.folder("www");
     try {
