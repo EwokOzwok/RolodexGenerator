@@ -124,6 +124,8 @@ const RolodexGenerator = () => {
         width: 125% !important;
       }
     ")),
+    HTML('<link rel="stylesheet" type="text/css" href="shinyMobile2.0.1.min.css">'),
+
     
     title = "${appTitle}",
     options = list(dark = FALSE),
@@ -299,17 +301,25 @@ const RolodexGenerator = () => {
     const readmeContent = await fetch("/rolodex_generator/IMPORTANT - README.txt").then(r => r.text());
     folder.file("IMPORTANT - README.txt", readmeContent);
     
-    // 4. Add www/ folder contents from /public/www
+    // 4. Add www/ folder contents from /public/www with color replacements
     const wwwFolder = folder.folder("www");
     try {
-      const response = await fetch("/www/");
-      if (response.ok) {
-        // If your server lists directory contents, parse & fetch all
-        // If not, manually list your www files
-        const files = ["style.css", "logo.png"]; // <- replace with actual files
-        for (const file of files) {
+      // Fetch and modify the CSS file with user's colors
+      const cssContent = await fetch("/rolodex_generator/www/shinyMobile2.0.1.min.css").then(r => r.text());
+      const modifiedCss = cssContent
+        .replace(/#46166B/gi, config.primaryColor)
+        .replace(/#5B2F7B/gi, config.secondaryColor)
+        .replace(/#EEB211/gi, config.accentColor);
+      wwwFolder.file("shinyMobile2.0.1.min.css", modifiedCss);
+      
+      // Add other www files (style.css, logo.png, etc.)
+      const otherFiles = ["style.css", "logo.png"]; // <- add your other files here
+      for (const file of otherFiles) {
+        try {
           const data = await fetch(`/www/${file}`).then(r => r.blob());
           wwwFolder.file(file, data);
+        } catch (err) {
+          console.warn(`Could not load /www/${file}:`, err);
         }
       }
     } catch (err) {
