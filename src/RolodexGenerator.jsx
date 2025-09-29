@@ -55,7 +55,7 @@ const RolodexGenerator = () => {
           .map((h) => h.trim().replace(/"/g, ""));
 
         const rows = lines
-          .slice(1, 6)
+          .slice(1) // take everything after the header row
           .map((line) => {
             const values = line.split(",").map((v) => v.trim().replace(/"/g, ""));
             return headers.reduce((obj, header, index) => {
