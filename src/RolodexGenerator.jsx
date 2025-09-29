@@ -40,7 +40,7 @@ const RolodexGenerator = () => {
       }
     ]
   });
-
+  const [isDownloading, setIsDownloading] = useState(false);
   
   // --- Handle CSV Upload ---
   const handleFileUpload = useCallback((event) => {
@@ -281,54 +281,64 @@ const RolodexGenerator = () => {
   };
 
   const downloadApp = async () => {
-    const zip = new JSZip();
-
-    // Create main folder
-    const folder = zip.folder("Rolodex App");
-
-    // 1. Add app.R (generated)
-    const code = generateAppCode();
-    folder.file("app.R", code);
-
-    // 2. Add Docker Build.txt & Dockerfile.txt from /public
-    const dockerBuild = await fetch("/rolodex_generator/Docker Build.txt").then(r => r.text());
-    folder.file("Docker Build.txt", dockerBuild);
-
-    const dockerFile = await fetch("/rolodex_generator/Dockerfile.txt").then(r => r.text());
-    folder.file("Dockerfile.txt", dockerFile);
-
-    // 3. Add README file instead of CSV
-    const readmeContent = await fetch("/rolodex_generator/IMPORTANT - README.txt").then(r => r.text());
-    folder.file("IMPORTANT - README.txt", readmeContent);
-    
-    // 4. Add www/ folder contents from /public/www with color replacements
-    const wwwFolder = folder.folder("www");
     try {
-      // Fetch and modify the CSS file with user's colors
-      const cssContent = await fetch("/rolodex_generator/www/shinyMobile2.0.1.min.css").then(r => r.text());
-      const modifiedCss = cssContent
-        .replace(/#46166B/gi, config.primaryColor)
-        .replace(/#5B2F7B/gi, config.secondaryColor)
-        .replace(/#EEB211/gi, config.accentColor);
-      wwwFolder.file("shinyMobile2.0.1.min.css", modifiedCss);
+      setIsDownloading(true); // start loading
       
-      // Add other www files (style.css, logo.png, etc.)
-      const otherFiles = ["style.css", "logo.png"]; // <- add your other files here
-      for (const file of otherFiles) {
-        try {
-          const data = await fetch(`/www/${file}`).then(r => r.blob());
-          wwwFolder.file(file, data);
-        } catch (err) {
-          console.warn(`Could not load /www/${file}:`, err);
-        }
-      }
-    } catch (err) {
-      console.warn("Could not load /www folder:", err);
-    }
+      const zip = new JSZip();
 
-    // Generate and trigger download
-    const content = await zip.generateAsync({ type: "blob" });
-    saveAs(content, "Rolodex_App.zip");
+
+      // Create main folder
+      const folder = zip.folder("Rolodex App");
+
+      // 1. Add app.R (generated)
+      const code = generateAppCode();
+      folder.file("app.R", code);
+
+      // 2. Add Docker Build.txt & Dockerfile.txt from /public
+      const dockerBuild = await fetch("/rolodex_generator/Docker Build.txt").then(r => r.text());
+      folder.file("Docker Build.txt", dockerBuild);
+
+      const dockerFile = await fetch("/rolodex_generator/Dockerfile.txt").then(r => r.text());
+      folder.file("Dockerfile.txt", dockerFile);
+
+      // 3. Add README file instead of CSV
+      const readmeContent = await fetch("/rolodex_generator/IMPORTANT - README.txt").then(r => r.text());
+      folder.file("IMPORTANT - README.txt", readmeContent);
+      
+      // 4. Add www/ folder contents from /public/www with color replacements
+      const wwwFolder = folder.folder("www");
+      try {
+        // Fetch and modify the CSS file with user's colors
+        const cssContent = await fetch("/rolodex_generator/www/shinyMobile2.0.1.min.css").then(r => r.text());
+        const modifiedCss = cssContent
+          .replace(/#46166B/gi, config.primaryColor)
+          .replace(/#5B2F7B/gi, config.secondaryColor)
+          .replace(/#EEB211/gi, config.accentColor);
+        wwwFolder.file("shinyMobile2.0.1.min.css", modifiedCss);
+        
+        // Add other www files (style.css, logo.png, etc.)
+        const otherFiles = ["style.css", "logo.png"]; // <- add your other files here
+        for (const file of otherFiles) {
+          try {
+            const data = await fetch(`/www/${file}`).then(r => r.blob());
+            wwwFolder.file(file, data);
+          } catch (err) {
+            console.warn(`Could not load /www/${file}:`, err);
+          }
+        }
+      } catch (err) {
+        console.warn("Could not load /www folder:", err);
+      }
+
+      // Generate and trigger download
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, "Rolodex_App.zip");
+      } catch (err) {
+      console.error("Error generating ZIP:", err);
+      alert("Something went wrong while preparing your app.");
+    } finally {
+      setIsDownloading(false); // stop loading
+    }
   };
 
 
@@ -881,10 +891,43 @@ const RolodexGenerator = () => {
                 </p>
                 <button
                   onClick={downloadApp}
-                  className="inline-flex items-center px-8 py-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all shadow-lg hover:shadow-xl"
+                  disabled={isDownloading}
+                  className={`inline-flex items-center px-6 py-3 rounded-lg font-semibold transition-all
+                    ${isDownloading 
+                      ? "bg-gray-400 text-white cursor-not-allowed" 
+                      : "bg-blue-600 text-white hover:bg-blue-700"
+                    }`}
                 >
-                  <Download className="mr-3 w-5 h-5" />
-                  Download App
+                  {isDownloading ? (
+                    <>
+                      <svg
+                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                        ></path>
+                      </svg>
+                      Preparing your app...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-5 h-5 mr-2" />
+                      Download App
+                    </>
+                  )}
                 </button>
                 <div className="mt-6">
                   <button
