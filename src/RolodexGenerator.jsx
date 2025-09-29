@@ -12,6 +12,8 @@ import {
   Settings,
   Eye,
 } from "lucide-react";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 const RolodexGenerator = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -251,16 +253,56 @@ const RolodexGenerator = () => {
   `;
   };
 
-  const downloadApp = () => {
+  const downloadApp = async () => {
+    const zip = new JSZip();
+
+    // Create main folder
+    const folder = zip.folder("Rolodex App");
+
+    // 1. Add app.R (generated)
     const code = generateAppCode();
-    const blob = new Blob([code], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${config.appTitle.toLowerCase().replace(/\s+/g, "_")}_app.R`;
-    a.click();
-    URL.revokeObjectURL(url);
+    folder.file("app.R", code);
+
+    // 2. Add Docker Build.txt & Dockerfile.txt from /public
+    const dockerBuild = await fetch("/Docker Build.txt").then(r => r.text());
+    folder.file("Docker Build.txt", dockerBuild);
+
+    const dockerFile = await fetch("/Dockerfile.txt").then(r => r.text());
+    folder.file("Dockerfile.txt", dockerFile);
+
+    // 3. Add user’s uploaded rolodex.csv
+    if (csvData) {
+      // If you stored the raw uploaded CSV text, use that.
+      // Otherwise, rebuild it from csvData + csvColumns:
+      const csvContent = [csvColumns.join(","), ...csvData.map(row =>
+        csvColumns.map(col => row[col] || "").join(",")
+      )].join("\n");
+
+      folder.file("rolodex.csv", csvContent);
+    }
+
+    // 4. Add www/ folder contents from /public/www
+    const wwwFolder = folder.folder("www");
+    try {
+      const response = await fetch("/www/");
+      if (response.ok) {
+        // If your server lists directory contents, parse & fetch all
+        // If not, manually list your www files
+        const files = ["style.css", "logo.png"]; // <- replace with actual files
+        for (const file of files) {
+          const data = await fetch(`/www/${file}`).then(r => r.blob());
+          wwwFolder.file(file, data);
+        }
+      }
+    } catch (err) {
+      console.warn("Could not load /www folder:", err);
+    }
+
+    // Generate and trigger download
+    const content = await zip.generateAsync({ type: "blob" });
+    saveAs(content, "Rolodex_App.zip");
   };
+
 
   const steps = [
     { number: 1, title: "Upload Data", icon: Upload, description: "Import your CSV file" },
