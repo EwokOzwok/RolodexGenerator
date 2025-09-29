@@ -42,6 +42,22 @@ const RolodexGenerator = () => {
   });
   const [isDownloading, setIsDownloading] = useState(false);
   
+  // Converts 3-digit hex (#000) → 6-digit hex (#000000)
+  const normalizeHex = (hex) => {
+    if (!hex) return hex;
+    // ensure it starts with #
+    let h = hex.startsWith("#") ? hex : `#${hex}`;
+    if (h.length === 4) {
+      h =
+        "#" +
+        h[1] + h[1] +
+        h[2] + h[2] +
+        h[3] + h[3];
+    }
+    return h.toLowerCase();
+  };
+
+
   // --- Handle CSV Upload ---
   const handleFileUpload = useCallback((event) => {
     const file = event.target.files[0];
@@ -310,10 +326,18 @@ const RolodexGenerator = () => {
       try {
         // Fetch and modify the CSS file with user's colors
         const cssContent = await fetch("/rolodex_generator/www/shinyMobile2.0.1.min.css").then(r => r.text());
+        const normalizedConfig = {
+          ...config,
+          primaryColor: normalizeHex(config.primaryColor),
+          secondaryColor: normalizeHex(config.secondaryColor),
+          accentColor: normalizeHex(config.accentColor),
+        };
         const modifiedCss = cssContent
-          .replace(/#46166B/gi, config.primaryColor)
-          .replace(/#5B2F7B/gi, config.secondaryColor)
-          .replace(/#EEB211/gi, config.accentColor);
+          .replace(/#46166B/gi, normalizedConfig.primaryColor)
+          .replace(/#5B2F7B/gi, normalizedConfig.secondaryColor)
+          .replace(/#EEB211/gi, normalizedConfig.accentColor)
+          .replace(/#EEB221/gi, normalizedConfig.accentColor);
+          
         wwwFolder.file("shinyMobile2.0.1.min.css", modifiedCss);
         
         // Add other www files (style.css, logo.png, etc.)
@@ -778,13 +802,13 @@ const RolodexGenerator = () => {
                       <input
                         type="color"
                         value={config.primaryColor}
-                        onChange={(e) => setConfig({ ...config, primaryColor: e.target.value })}
+                        onChange={(e) => setConfig({ ...config, primaryColor: normalizeHex(e.target.value) })}
                         className="w-12 h-10 border border-gray-200 rounded-lg cursor-pointer"
                       />
                       <input
                         type="text"
                         value={config.primaryColor}
-                        onChange={(e) => setConfig({ ...config, primaryColor: e.target.value })}
+                        onChange={(e) => setConfig({ ...config, primaryColor: normalizeHex(e.target.value) })}
                         className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
@@ -797,13 +821,13 @@ const RolodexGenerator = () => {
                       <input
                         type="color"
                         value={config.secondaryColor}
-                        onChange={(e) => setConfig({ ...config, secondaryColor: e.target.value })}
+                        onChange={(e) => setConfig({ ...config, secondaryColor: normalizeHex(e.target.value) })}
                         className="w-12 h-10 border border-gray-200 rounded-lg cursor-pointer"
                       />
                       <input
                         type="text"
                         value={config.secondaryColor}
-                        onChange={(e) => setConfig({ ...config, secondaryColor: e.target.value })}
+                        onChange={(e) => setConfig({ ...config, secondaryColor: normalizeHex(e.target.value) })}
                         className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
@@ -816,13 +840,13 @@ const RolodexGenerator = () => {
                       <input
                         type="color"
                         value={config.accentColor}
-                        onChange={(e) => setConfig({ ...config, accentColor: e.target.value })}
+                        onChange={(e) => setConfig({ ...config, accentColor: normalizeHex(e.target.value) })}
                         className="w-12 h-10 border border-gray-200 rounded-lg cursor-pointer"
                       />
                       <input
                         type="text"
                         value={config.accentColor}
-                        onChange={(e) => setConfig({ ...config, accentColor: e.target.value })}
+                        onChange={(e) => setConfig({ ...config, accentColor: normalizeHex(e.target.value) })}
                         className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
