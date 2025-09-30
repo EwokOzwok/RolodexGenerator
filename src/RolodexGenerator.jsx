@@ -378,8 +378,8 @@ const RolodexGenerator = () => {
       folder.file("Dockerfile.txt", dockerFile);
 
       // 3. Add README
-      const readmeContent = await fetch("/rolodex_generator/IMPORTANT - README.txt").then(r => r.text());
-      folder.file("IMPORTANT - README.txt", readmeContent);
+      const readmeContent = await fetch("/rolodex_generator/IMPORTANT - README.html").then(r => r.text());
+      folder.file("IMPORTANT - README.html", readmeContent);
 
       // 4. Add www/ folder contents
       const wwwFolder = folder.folder("www");

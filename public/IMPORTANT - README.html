@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rolodex App Deployment Guide</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      margin: 40px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    pre {
+      background: #272822;
+      color: #f8f8f2;
+      padding: 12px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    ul {
+      margin: 10px 0 20px 20px;
+    }
+    a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .video-links {
+      background: #ecf0f1;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Rolodex App Deployment Guide</h1>
+  <p>This guide will walk you through the steps needed to deploy and run the <strong>Rolodex App</strong> on your local machine or in the cloud. Follow each step carefully to ensure successful deployment.</p>
+
+  <h2>Step 1: Prepare Your Data</h2>
+  <ul>
+    <li>Place your resources <code>.csv</code> file in the main project directory.</li>
+    <li>The filename must be named exactly <code>rolodex.csv</code>.</li>
+    <li>The CSV file must match the same format and structure as the one you uploaded originally.</li>
+  </ul>
+
+  <h2>Step 2: Download Docker Desktop</h2>
+  <p>The Rolodex App is containerized and requires Docker Desktop to run.</p>
+  <ul>
+    <li>Download the Windows or Mac version of Docker Desktop: <a href="https://www.docker.com/products/docker-desktop/" target="_blank">https://www.docker.com/products/docker-desktop/</a></li>
+  </ul>
+
+  <h2>Step 3: Install Docker Desktop</h2>
+  <p>Run the installer you downloaded in Step 2 and complete the installation process on your computer.</p>
+
+  <h2>Step 4: Build the Docker Container</h2>
+  <ol>
+    <li>Open <strong>Command Prompt</strong> (Windows) or <strong>Terminal</strong> (Mac).</li>
+    <li>Navigate to the project folder using the <code>cd</code> command.
+      <br><em>Example:</em>
+      <pre>cd "C:/Users/Admin/Desktop/Rolodex App"</pre>
+    </li>
+    <li>Run the following commands to build and run the app container:
+      <pre>
+docker build -f Dockerfile.txt -t rolodex .
+docker run -d --restart=always -p 1222:1222 --name RolodexApp rolodex
+      </pre>
+    </li>
+  </ol>
+
+  <h2>Step 5: Access Your App</h2>
+  <p>Once the container is running, open your browser and navigate to:</p>
+  <ul>
+    <li><a href="http://localhost:1222" target="_blank">http://localhost:1222</a></li>
+    <li>or <a href="http://127.0.0.1:1222" target="_blank">http://127.0.0.1:1222</a></li>
+  </ul>
+
+  <h2>Step 6: Advanced - Deploy to the Cloud</h2>
+  <p>To make your app accessible online, you can push your Docker image to Docker Hub and then deploy it using a cloud service such as Google Cloud Run.</p>
+  <ul>
+    <li>Requires a free Docker Hub account.</li>
+    <li>Once pushed, you can deploy the image to hosting providers that support Docker.</li>
+  </ul>
+
+  <div class="video-links">
+    <h3>Instructional Videos</h3>
+    <ul>
+      <li><a href="https://www.youtube.com/watch?v=tJsrv_kPh30" target="_blank">How to tag and push a Docker image to DockerHub</a></li>
+      <li><a href="https://www.youtube.com/watch?v=7CvD6oHmYxU" target="_blank">Deploy Docker image on Google Cloud Run</a></li>
+    </ul>
+  </div>
+
+</body>
+</html>
