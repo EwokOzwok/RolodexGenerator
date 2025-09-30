@@ -5513,7 +5513,7 @@ html.with-modal-dialog .page-content {
     transition-property: transform;
     transition-timing-function: var(--f7-popup-transition-timing-function);
     transform: translate3d(0,100vh,0);
-    background: #fff;
+    background: #5B2F7B;
     z-index: 11000;
     overflow: hidden;
     border-radius: var(--f7-popup-border-radius)

@@ -265,6 +265,35 @@ const RolodexGenerator = () => {
   server <- function(input, output, session) {
     resources <- read.csv("rolodex.csv", stringsAsFactors = FALSE)
 
+    observeEvent(input$helppopup, {
+          f7Popup(id="NewUserintro1", title= f7Align(h3("Quick Introduction"), side=c("center")), swipeToClose = T, closeButton = T,
+                  f7Block(
+                    f7Shadow(
+                      intensity = 30,
+                      hover = F,
+                      f7Card(f7BlockHeader(text="Navigating the Resource Rolodex"),
+                            f7Align(h4("Use the buttons at the bottom of the screen to navigate between tabs"), side=c("center")),
+                            hairlines = F, strong = T, inset =
+                              F, tablet = FALSE))),
+                  f7Block(
+                    f7Shadow(
+                      intensity = 30,
+                      hover = F,
+                      f7Card(f7BlockHeader(text="What do the buttons do?"),
+                            h5(f7Icon("house_fill"),"- Return home"),
+                            h5(f7Icon("search"),"- Search for resources"),
+                            hairlines = F, strong = T, inset =
+                              F, tablet = FALSE)),
+                    br(),
+                    br(),
+                    br(),
+                    br(),
+                    br(),
+                    br(),
+                    f7BlockFooter(f7Align(h4("Swipe up to close this popup"), side=c("center"))))
+      )
+    })
+
     output$selector <- renderUI({
       tagList(
         f7SmartSelect(
@@ -281,7 +310,7 @@ const RolodexGenerator = () => {
       req(input$category)
       items <- subset(resources, Type == input$category)
       if (nrow(items) == 0) return(NULL)
-
+      f7Card(
       f7Accordion(
         id = paste0("acc_", gsub("\\\\s", "_", input$category)),
         multiCollapse = TRUE,
@@ -303,6 +332,8 @@ const RolodexGenerator = () => {
             )
           )
         })
+      ),
+      br(),
       )
     })
 
