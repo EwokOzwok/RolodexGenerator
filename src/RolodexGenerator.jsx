@@ -26,9 +26,9 @@ const RolodexGenerator = () => {
     categoryColumn: "",
     urlColumn: "",
     theme: "flatly",
-    primaryColor: "#2563eb",
-    secondaryColor: "#10b981",
-    accentColor: "#000",
+    primaryColor: "#3b82f6",
+    secondaryColor: "#8b5cf6",
+    accentColor: "#f59e0b",
     textColor: "#ffffff",
     showSearch: true,    
     accordionItems: [
@@ -41,6 +41,52 @@ const RolodexGenerator = () => {
       }
     ]
   });
+
+  const [colorTemplates] = useState([
+    {
+      name: "Ocean Blue",
+      primaryColor: "#3b82f6",
+      secondaryColor: "#8b5cf6",
+      accentColor: "#f59e0b",
+      textColor: "#ffffff"
+    },
+    {
+      name: "Forest Green",
+      primaryColor: "#10b981",
+      secondaryColor: "#059669",
+      accentColor: "#34d399",
+      textColor: "#ffffff"
+    },
+    {
+      name: "Sunset",
+      primaryColor: "#f97316",
+      secondaryColor: "#dc2626",
+      accentColor: "#fbbf24",
+      textColor: "#ffffff"
+    },
+    {
+      name: "Midnight",
+      primaryColor: "#1e293b",
+      secondaryColor: "#475569",
+      accentColor: "#06b6d4",
+      textColor: "#ffffff"
+    },
+    {
+      name: "Rose Garden",
+      primaryColor: "#e11d48",
+      secondaryColor: "#be123c",
+      accentColor: "#fb7185",
+      textColor: "#ffffff"
+    },
+    {
+      name: "Slate Modern",
+      primaryColor: "#64748b",
+      secondaryColor: "#475569",
+      accentColor: "#0ea5e9",
+      textColor: "#ffffff"
+    }
+  ]);
+
   const [isDownloading, setIsDownloading] = useState(false);
   
   // Converts 3-digit hex (#000) → 6-digit hex (#000000)
@@ -809,6 +855,50 @@ const RolodexGenerator = () => {
               </div>
 
               <div className="max-w-2xl mx-auto space-y-8">
+              {/* Color Template Selector */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Choose a Color Template (Optional)
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {colorTemplates.map((template) => (
+                    <button
+                      key={template.name}
+                      onClick={() => setConfig({
+                        ...config,
+                        primaryColor: template.primaryColor,
+                        secondaryColor: template.secondaryColor,
+                        accentColor: template.accentColor,
+                        textColor: template.textColor
+                      })}
+                      className="relative p-4 border-2 border-gray-200 rounded-lg hover:border-blue-400 transition-all group"
+                    >
+                      <div className="flex space-x-1 mb-2">
+                        <div 
+                          className="w-6 h-6 rounded" 
+                          style={{ backgroundColor: template.primaryColor }}
+                        />
+                        <div 
+                          className="w-6 h-6 rounded" 
+                          style={{ backgroundColor: template.secondaryColor }}
+                        />
+                        <div 
+                          className="w-6 h-6 rounded" 
+                          style={{ backgroundColor: template.accentColor }}
+                        />
+                      </div>
+                      <span className="text-xs font-medium text-gray-700">
+                        {template.name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Or customize colors manually below
+                </p>
+              </div>
+
+              <div className="border-t pt-6"></div>
                 {/* App Title
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
