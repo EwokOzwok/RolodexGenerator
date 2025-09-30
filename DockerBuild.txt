@@ -1,4 +1,4 @@
-cd C:\Users\intra\Desktop\Rolodex Generator
+cd "C:\Users\intra\Desktop\Rolodex Generator"
 docker build -f Dockerfile.txt --no-cache -t rologen:dev8001 .
 docker tag rologen:dev8001 eeozmat/rologen:dev8001
 docker push eeozmat/rologen:dev8001
