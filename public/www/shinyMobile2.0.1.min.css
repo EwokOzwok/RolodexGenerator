@@ -1417,7 +1417,7 @@ html.device-full-viewport,html.device-full-viewport body {
     box-sizing: border-box;
     margin: 0;
     height: calc(var(--f7-navbar-height) + var(--f7-safe-area-top));
-    color: var(--f7-navbar-text-color,var(--f7-bars-text-color));
+    color: #123456;
     font-size: var(--f7-navbar-font-size)
 }
 
@@ -2538,7 +2538,7 @@ html.device-full-viewport,html.device-full-viewport body {
 }
 
 .tabbar a,.tabbar-icons a {
-    color: var(--f7-tabbar-link-inactive-color)
+    color: #46166B
 }
 
 .tabbar .link,.tabbar-icons .link {
@@ -3097,7 +3097,7 @@ html.device-full-viewport,html.device-full-viewport body {
     box-sizing: border-box;
     position: relative;
     z-index: 1;
-    color: var(--f7-block-text-color);
+    color: #123456;
     margin: var(--f7-block-margin-vertical) 0;
     padding-top: 0;
     padding-bottom: 0;
@@ -3614,7 +3614,7 @@ html.device-full-viewport,html.device-full-viewport body {
     max-width: 100%;
     font-size: var(--f7-list-item-title-font-size);
     font-weight: var(--f7-list-item-title-font-weight);
-    color: var(--f7-list-item-title-text-color);
+    color: #123456;
     line-height: var(--f7-list-item-title-line-height)
 }
 
@@ -9779,7 +9779,7 @@ html.with-modal-popup-push-closing .framework7-root>.panel-in.panel-push.panel-r
 
 .card-header {
     min-height: var(--f7-card-header-min-height);
-    color: var(--f7-card-header-text-color);
+    color: #123456;
     font-size: var(--f7-card-header-font-size);
     font-weight: var(--f7-card-header-font-weight);
     padding: var(--f7-card-header-padding-vertical) var(--f7-card-header-padding-horizontal)

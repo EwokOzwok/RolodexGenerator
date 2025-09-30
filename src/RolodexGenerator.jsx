@@ -29,6 +29,7 @@ const RolodexGenerator = () => {
     primaryColor: "#2563eb",
     secondaryColor: "#10b981",
     accentColor: "#000",
+    textColor: "#ffffff",
     showSearch: true,    
     accordionItems: [
       {
@@ -140,8 +141,24 @@ const RolodexGenerator = () => {
         width: 125% !important;
       }
     ")),
+    
+    tags$head(
     HTML('<link rel="stylesheet" type="text/css" href="shinyMobile2.0.1.min.css">'),
-
+    # Favicon (root or explicit path)
+    tags$link(rel = "icon", type = "image/png", href = "icons/favicon.ico"),
+    
+    # Manifest
+    tags$link(rel = "manifest", href = "manifest.json"),
+    
+    # Service Worker
+    tags$script(HTML("
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('service-worker.js');
+        });
+      }
+    "))
+    ),
     
     title = "${appTitle}",
     options = list(dark = FALSE),
@@ -301,69 +318,84 @@ const RolodexGenerator = () => {
       setIsDownloading(true); // start loading
       
       const zip = new JSZip();
-
-
-      // Create main folder
       const folder = zip.folder("Rolodex App");
 
       // 1. Add app.R (generated)
       const code = generateAppCode();
       folder.file("app.R", code);
 
-      // 2. Add Docker Build.txt & Dockerfile.txt from /public
+      // 2. Add Docker Build.txt & Dockerfile.txt
       const dockerBuild = await fetch("/rolodex_generator/Docker Build.txt").then(r => r.text());
       folder.file("Docker Build.txt", dockerBuild);
 
       const dockerFile = await fetch("/rolodex_generator/Dockerfile.txt").then(r => r.text());
       folder.file("Dockerfile.txt", dockerFile);
 
-      // 3. Add README file instead of CSV
+      // 3. Add README
       const readmeContent = await fetch("/rolodex_generator/IMPORTANT - README.txt").then(r => r.text());
       folder.file("IMPORTANT - README.txt", readmeContent);
-      
-      // 4. Add www/ folder contents from /public/www with color replacements
+
+      // 4. Add www/ folder contents
       const wwwFolder = folder.folder("www");
-      try {
-        // Fetch and modify the CSS file with user's colors
-        const cssContent = await fetch("/rolodex_generator/www/shinyMobile2.0.1.min.css").then(r => r.text());
-        const normalizedConfig = {
-          ...config,
-          primaryColor: normalizeHex(config.primaryColor),
-          secondaryColor: normalizeHex(config.secondaryColor),
-          accentColor: normalizeHex(config.accentColor),
-        };
-        const modifiedCss = cssContent
-          .replace(/#46166B/gi, normalizedConfig.primaryColor)
-          .replace(/#5B2F7B/gi, normalizedConfig.secondaryColor)
-          .replace(/#EEB211/gi, normalizedConfig.accentColor)
-          .replace(/#EEB221/gi, normalizedConfig.accentColor);
-          
-        wwwFolder.file("shinyMobile2.0.1.min.css", modifiedCss);
-        
-        // Add other www files (style.css, logo.png, etc.)
-        const otherFiles = ["style.css", "logo.png"]; // <- add your other files here
-        for (const file of otherFiles) {
-          try {
-            const data = await fetch(`/www/${file}`).then(r => r.blob());
-            wwwFolder.file(file, data);
-          } catch (err) {
-            console.warn(`Could not load /www/${file}:`, err);
-          }
+
+      // --- CSS with color replacements ---
+      const cssContent = await fetch("/rolodex_generator/www/shinyMobile2.0.1.min.css").then(r => r.text());
+      const normalizedConfig = {
+        ...config,
+        primaryColor: normalizeHex(config.primaryColor),
+        secondaryColor: normalizeHex(config.secondaryColor),
+        accentColor: normalizeHex(config.accentColor),
+        textColor: normalizeHex(config.textColor),
+      };
+      const modifiedCss = cssContent
+        .replace(/#46166B/gi, normalizedConfig.primaryColor)
+        .replace(/#5B2F7B/gi, normalizedConfig.secondaryColor)
+        .replace(/#EEB211/gi, normalizedConfig.accentColor)
+        .replace(/#EEB221/gi, normalizedConfig.accentColor)
+        .replace(/#123456/gi, normalizedConfig.textColor);
+
+      wwwFolder.file("shinyMobile2.0.1.min.css", modifiedCss);
+
+      // --- Other top-level www files ---
+      const topLevelFiles = ["manifest.json", "service-worker.js"];
+      for (const file of topLevelFiles) {
+        try {
+          const data = await fetch(`/rolodex_generator/www/${file}`).then(r => r.blob());
+          wwwFolder.file(file, data);
+        } catch (err) {
+          console.warn(`Could not load /rolodex_generator/www/${file}:`, err);
         }
-      } catch (err) {
-        console.warn("Could not load /www folder:", err);
+      }
+
+      // --- icons subfolder ---
+      const iconsFolder = wwwFolder.folder("icons");
+      const iconFiles = [
+        "apple-touch-icon.png",
+        "favicon.ico",
+        "favicon.png",
+        "icon-144.png",
+        "shortcut"
+      ];
+      for (const file of iconFiles) {
+        try {
+          const data = await fetch(`/rolodex_generator/www/icons/${file}`).then(r => r.blob());
+          iconsFolder.file(file, data);
+        } catch (err) {
+          console.warn(`Could not load /rolodex_generator/www/icons/${file}:`, err);
+        }
       }
 
       // Generate and trigger download
       const content = await zip.generateAsync({ type: "blob" });
       saveAs(content, "Rolodex_App.zip");
-      } catch (err) {
+    } catch (err) {
       console.error("Error generating ZIP:", err);
       alert("Something went wrong while preparing your app.");
     } finally {
-      setIsDownloading(false); // stop loading
+      setIsDownloading(false);
     }
   };
+
 
 
   const steps = [
@@ -479,7 +511,7 @@ const RolodexGenerator = () => {
                   Start by uploading a CSV file with your data. The first row should contain column headers.
                 </p>
                 <p className="text-sm text-blue-600 underline">
-                  <a href="rolodex_generator/rolodex_example.csv" download>
+                  <a href="rolodex_generator/rolodex.csv" download>
                     Download example CSV (use same columns and coding)
                   </a>
                 </p>
@@ -851,7 +883,29 @@ const RolodexGenerator = () => {
                       />
                     </div>
                   </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Text Color
+                      </label>
+                      <div className="flex items-center space-x-3">
+                        <input
+                          type="color"
+                          value={config.textColor}
+                          onChange={(e) => setConfig({ ...config, textColor: normalizeHex(e.target.value) })}
+                          className="w-12 h-10 border border-gray-200 rounded-lg cursor-pointer"
+                        />
+                        <input
+                          type="text"
+                          value={config.textColor}
+                          onChange={(e) => setConfig({ ...config, textColor: normalizeHex(e.target.value) })}
+                          className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                    </div>
+                  </div>
+
                 </div>
+
+
 
                 {/* Features */}
                 <div>
