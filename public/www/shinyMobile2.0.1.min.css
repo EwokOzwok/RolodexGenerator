@@ -6756,7 +6756,7 @@ html.with-modal-sheet-push-closing .dark .framework7-root>.view:after,html.with-
     color: var(--f7-toast-text-color);
     font-size: var(--f7-toast-font-size);
     box-sizing: border-box;
-    background-color: #5B2F7B;
+    background-color: #46166B;
     opacity: 0
 }
 
