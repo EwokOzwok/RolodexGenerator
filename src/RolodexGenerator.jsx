@@ -234,8 +234,16 @@ const RolodexGenerator = () => {
                 intensity = 5,
                 hover = TRUE,
                 f7Card(title="Adding the app to your device",
-                       uiOutput("installapp"),
-                       footer=f7Button(inputId ="helppopup", label = "Quick Introduction", color= "darkorchid3", fill=T, shadow=T, rounded = T, size = "small"),
+                       uiOutput("installapp"),                       
+                       hairlines = F, strong = T, inset =
+                         F, tablet = FALSE))),
+
+            f7Block(
+              f7Shadow(
+                intensity = 5,
+                hover = TRUE,
+                f7Card(title=NULL,
+                       f7Button(inputId ="helppopup", label = "Quick Introduction", color= "darkorchid3", fill=T, shadow=T, rounded = T, size = "large"),
                        hairlines = F, strong = T, inset =
                          F, tablet = FALSE))),
 
@@ -271,7 +279,7 @@ const RolodexGenerator = () => {
                     f7Shadow(
                       intensity = 30,
                       hover = F,
-                      f7Card(f7BlockHeader(text="Navigating the Resource Rolodex"),
+                      f7Card(f7BlockHeader(text="Navigating the ${appTitle} App"),
                             f7Align(h4("Use the buttons at the bottom of the screen to navigate between tabs"), side=c("center")),
                             hairlines = F, strong = T, inset =
                               F, tablet = FALSE))),
@@ -281,7 +289,7 @@ const RolodexGenerator = () => {
                       hover = F,
                       f7Card(f7BlockHeader(text="What do the buttons do?"),
                             h5(f7Icon("house_fill"),"- Return home"),
-                            h5(f7Icon("search"),"- Search for resources"),
+                            h5(f7Icon("search"),"- Browse resources"),
                             hairlines = F, strong = T, inset =
                               F, tablet = FALSE)),
                     br(),
