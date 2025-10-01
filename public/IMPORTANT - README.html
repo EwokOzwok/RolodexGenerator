@@ -122,7 +122,7 @@
     <div class="tip">
       <strong>🍎 Mac Users:</strong> You need to know if your Mac has an Intel chip or an Apple Silicon (M1/M2/M3) chip before downloading Docker Desktop.
       <ol>
-        <li>Click the Apple logo  in the top-left corner</li>
+        <li>Click the Apple logo in the top-left corner</li>
         <li>Select <strong>About This Mac</strong></li>
         <li>Look for the line that says <strong>Processor</strong> or <strong>Chip</strong></li>
         <li>If it says “Intel” → download the Intel (x86) version of Docker Desktop</li>
@@ -199,6 +199,48 @@
 
   <div class="encouragement" style="margin-top: 40px;">
     <strong>👏 Congrats!</strong> You just built and ran a web app on your own computer. Pretty awesome!
+  </div>
+  <h3>Step 5: Connect RStudio to Your shinyapps.io Account</h3>
+  <p>You'll need to connect RStudio to your shinyapps.io account just once. Here's how:</p>
+  <ol>
+    <li>Go to your <strong><a href="https://www.shinyapps.io/admin/#/dashboard" target="_blank">shinyapps.io dashboard</a></strong></li>
+    <li>Click on your name in the top-right corner, then select <strong>Tokens</strong></li>
+    <li>Click <strong>Show</strong> next to "Token" and then <strong>Show Secret</strong></li>
+    <li>Click <strong>Copy to clipboard</strong></li>
+    <li>Back in RStudio, paste this into the Console (the bottom-left panel) and press Enter</li>
+  </ol>
+  <div class="tip">
+    <strong>💡 Need more detailed help?</strong> Check out this complete step-by-step guide: <a href="https://shiny.posit.co/r/articles/share/shinyapps/" target="_blank">Deploying to shinyapps.io</a>
+  </div>
+
+  <h3>Step 6: Publish Your App! 🚀</h3>
+  <p>This is the exciting part - and it's super easy!</p>
+  <ol>
+    <li>Make sure your <code>app.R</code> file is open in RStudio</li>
+    <li>Look for a <strong>blue "Publish" button</strong> in the top-right corner of the code editor</li>
+    <li>Click it!</li>
+    <li>A window will pop up - just click <strong>Publish</strong> again</li>
+    <li>Wait a minute or two while your app uploads (you'll see a progress bar)</li>
+  </ol>
+  <div class="encouragement">
+    <strong>🎉 Done!</strong> Your app is now live on the internet! You'll get a link that looks like <code>https://yourname.shinyapps.io/rolodex/</code> that you can share with anyone!
+  </div>
+
+  <h2>🐳 Alternative: Deploy with Docker (More Advanced)</h2>
+  <div class="instruction-box">
+    <p>If you prefer Docker or need more control, you can also deploy using Docker Hub and Google Cloud Run:</p>
+    <div class="video-section">
+      <h3>📺 Docker Video Tutorials:</h3>
+      <ul>
+        <li><a href="https://www.youtube.com/watch?v=tJsrv_kPh30" target="_blank">How to push your app to DockerHub</a></li>
+        <li><a href="https://www.youtube.com/watch?v=7CvD6oHmYxU" target="_blank">Deploy your app on Google Cloud Run</a></li>
+      </ul>
+      <p><em>Note: You'll need a free Docker Hub account and a Google Cloud account for this option.</em></p>
+    </div>
+  </div>
+
+  <div class="encouragement" style="margin-top: 40px;">
+    <strong>🎓 You Did It!</strong> See? Not so scary after all! You just built and deployed a web application - that's genuinely impressive, even if it felt simple. Pat yourself on the back! 👏
   </div>
 </body>
 </html>
