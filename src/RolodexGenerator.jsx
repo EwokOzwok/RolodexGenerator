@@ -296,12 +296,14 @@ const RolodexGenerator = () => {
 
     output$selector <- renderUI({
       tagList(
-        f7SmartSelect(
-          inputId = "category",
-          label = NULL,
-          choices = sort(unique(resources$Type)),
-          selected = NULL,
-          type = "popup"
+        div(
+          class = "resource-select-wrapper",
+          f7Select(
+            inputId = "category",
+            label = NULL,
+            choices = sort(unique(resources$Type)),
+            selected = NULL
+          )
         )
       )
     })
@@ -311,6 +313,7 @@ const RolodexGenerator = () => {
       items <- subset(resources, Type == input$category)
       if (nrow(items) == 0) return(NULL)
       f7Card(
+      br(),
       f7Accordion(
         id = paste0("acc_", gsub("\\\\s", "_", input$category)),
         multiCollapse = TRUE,

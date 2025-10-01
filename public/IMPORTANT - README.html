@@ -99,9 +99,9 @@
 </head>
 <body>
   <h1>🚀 Your Rolodex App - Simple Setup Guide</h1>
-  
+
   <div class="encouragement">
-    <strong>👋 Hey there!</strong> First time using the command line? No worries at all! This might look a bit technical at first, but we promise it's way easier than it seems. Think of it like following a recipe - just take it one step at a time, and you'll have your app running in about 10 minutes. You've got this! 💪
+    <strong>👋 Hey there!</strong> First time using the command line? No worries! Just follow each step carefully. Whenever you see a command in a gray box, <strong>copy it, paste it into your window, and press Enter</strong> on your keyboard to run it. Easy! 💪
   </div>
 
   <h2><span class="step-number">1</span>Get Your Data File Ready</h2>
@@ -115,161 +115,90 @@
 
   <h2><span class="step-number">2</span>Download Docker Desktop</h2>
   <div class="instruction-box">
-    <p>Docker is like a self-contained box that has everything your app needs to run. Don't worry about what it does behind the scenes - just think of it as the engine that powers your app!</p>
+    <p>Docker is like a self-contained box that has everything your app needs to run.</p>
     <p><strong>Download it here:</strong> <a href="https://www.docker.com/products/docker-desktop/" target="_blank">Docker Desktop</a></p>
-    <p>Choose the Mac or Windows version depending on your computer.</p>
+    <p>Choose the Windows or Mac version depending on your computer.</p>
+
+    <div class="tip">
+      <strong>🍎 Mac Users:</strong> You need to know if your Mac has an Intel chip or an Apple Silicon (M1/M2/M3) chip before downloading Docker Desktop.
+      <ol>
+        <li>Click the Apple logo  in the top-left corner</li>
+        <li>Select <strong>About This Mac</strong></li>
+        <li>Look for the line that says <strong>Processor</strong> or <strong>Chip</strong></li>
+        <li>If it says “Intel” → download the Intel (x86) version of Docker Desktop</li>
+        <li>If it says “Apple M1/M2/M3” → download the Apple Silicon version</li>
+      </ol>
+    </div>
   </div>
 
   <h2><span class="step-number">3</span>Install Docker Desktop</h2>
   <div class="instruction-box">
-    <p>Double-click the file you just downloaded and follow the installation steps (it's just like installing any other program - keep clicking "Next" or "Continue").</p>
-    <p><strong>After it installs, open Docker Desktop</strong> and wait for it to start up completely. You'll see a little whale icon when it's ready.</p>
+    <p>Double-click the file you just downloaded and follow the steps. After it installs, open Docker Desktop and wait for the little whale icon 🐳 to appear – that means it’s ready.</p>
   </div>
 
   <h2><span class="step-number">4</span>Open Your Command Window</h2>
-  
   <div class="instruction-box windows">
     <h3>🪟 For Windows Users:</h3>
     <ol>
-      <li>Click the <strong>Start menu</strong> (Windows logo in the bottom-left corner)</li>
-      <li>Type <code>powershell</code></li>
+      <li>Click the <strong>Start menu</strong></li>
+      <li>Type <code>powershell</code> and press <strong>Enter</strong></li>
       <li>Click on <strong>Windows PowerShell</strong> when it appears</li>
-      <li>A blue window with white text will open - this is where you'll type commands!</li>
     </ol>
   </div>
 
   <div class="instruction-box mac">
     <h3>🍎 For Mac Users:</h3>
     <ol>
-      <li>Press <strong>Command + Space</strong> on your keyboard</li>
+      <li>Press <strong>Command + Space</strong></li>
       <li>Type <code>terminal</code></li>
       <li>Press <strong>Enter</strong></li>
-      <li>A white or black window will open - this is where you'll type commands!</li>
     </ol>
   </div>
 
   <h2><span class="step-number">5</span>Navigate to Your App Folder</h2>
   <div class="instruction-box">
-    <p>Now you need to tell your computer where your Rolodex App files are. We'll use the <code>cd</code> command (which stands for "change directory" - but just think of it as "go to this folder").</p>
-    
-    <p><strong>Here's how:</strong></p>
-    <ol>
-      <li>Find your Rolodex App folder on your computer (maybe it's on your Desktop or in Documents)</li>
-      <li>Right-click on the folder and look for an option like "Copy as path" (Windows) or hold <strong>Option</strong> and right-click to see "Copy as Pathname" (Mac)</li>
-      <li>Go back to your PowerShell/Terminal window</li>
-      <li>Type <code>cd</code> (with a space after it), then paste the path you copied</li>
-      <li>Press <strong>Enter</strong></li>
-    </ol>
-
-    <p><strong>Example for Windows:</strong></p>
+    <p>Use the <code>cd</code> command (means “go to folder”) to point your terminal to where your Rolodex App files are.</p>
+    <p>Example for Windows:</p>
     <pre>cd "C:\Users\YourName\Desktop\Rolodex App"</pre>
 
-    <p><strong>Example for Mac:</strong></p>
+    <p>Example for Mac:</p>
     <pre>cd "/Users/YourName/Desktop/Rolodex App"</pre>
 
-    <div class="tip">
-      <strong>💡 Pro tip:</strong> On Mac, you can also type <code>cd</code> (with a space) and then drag the folder directly into the Terminal window - it'll automatically paste the path!
-    </div>
+    <p>Press <strong>Enter</strong> after typing or pasting the command.</p>
   </div>
 
   <h2><span class="step-number">6</span>Build and Start Your App</h2>
   <div class="instruction-box">
-    <p>Almost there! Now we'll create and start your app with two simple commands. Just copy and paste these one at a time:</p>
+    <p>Now let’s build and run the app. Copy the commands below depending on your computer:</p>
 
-    <p><strong>First command</strong> (this builds your app - might take 2-3 minutes):</p>
+    <h3>🪟 Windows or Intel-based Mac</h3>
+    <p>First build (wait 2–3 minutes):</p>
     <pre>docker build -f Dockerfile.txt -t rolodex .</pre>
 
-    <p>Wait for it to finish (you'll see lots of text scrolling by - that's normal!), then run the <strong>second command</strong> (this starts your app):</p>
+    <p>Then run:</p>
+    <pre>docker run -d --restart=always -p 1222:1222 --name RolodexApp rolodex</pre>
+
+    <h3>🍎 Apple Silicon (M1/M2/M3) Mac</h3>
+    <p>First build (forces compatibility mode):</p>
+    <pre>docker build --platform=linux/amd64 -f Dockerfile.txt -t rolodex .</pre>
+
+    <p>Then run:</p>
     <pre>docker run -d --restart=always -p 1222:1222 --name RolodexApp rolodex</pre>
 
     <div class="encouragement">
-      <strong>🎉 That's it!</strong> Your app is now running on your computer!
+      <strong>🎉 That’s it!</strong> Your app is now running on your computer.
     </div>
   </div>
 
   <h2><span class="step-number">7</span>Open Your App in a Browser</h2>
   <div class="instruction-box">
-    <p>Open your favorite web browser (Chrome, Safari, Firefox, etc.) and go to:</p>
-    <p><strong><a href="http://localhost:1222" target="_blank">http://localhost:1222</a></strong></p>
-    <p>You should see your Rolodex App! 🎊</p>
-    
-    <div class="tip">
-      <strong>💡 Bookmark it!</strong> As long as Docker Desktop is running, you can always get back to your app at this address.
-    </div>
-  </div>
-
-  <h2>🌐 Want to Share Your App Online for FREE? (Recommended!)</h2>
-  <div class="instruction-box">
-    <p>Right now, your app only works on your computer. Want to share it with others so they can access it from anywhere? The easiest way is using <strong>shinyapps.io</strong> - it's free and surprisingly simple!</p>
-    
-    <h3>Step 1: Create Your Free Account</h3>
-    <p>Go to <strong><a href="https://www.shinyapps.io/admin/#/signup" target="_blank">shinyapps.io</a></strong> and sign up for a free account. It takes about 30 seconds!</p>
-
-    <h3>Step 2: Download and Install R</h3>
-    <p>R is the programming language your app uses. Don't worry - you won't need to write any code!</p>
-    <ul>
-      <li><strong>For Windows:</strong> <a href="https://cran.r-project.org/bin/windows/base/" target="_blank">Download R for Windows</a></li>
-      <li><strong>For Mac:</strong> <a href="https://cran.r-project.org/bin/macosx/" target="_blank">Download R for Mac</a></li>
-    </ul>
-    <p>Run the installer and follow the prompts (just keep clicking "Next" or "Continue").</p>
-
-    <h3>Step 3: Download and Install RStudio</h3>
-    <p>RStudio is like a friendly control panel for R. It makes everything visual and easy!</p>
-    <p><strong>Download RStudio Desktop (Free version):</strong> <a href="https://posit.co/download/rstudio-desktop/" target="_blank">Get RStudio</a></p>
-    <p>Install it just like any other program.</p>
-
-    <h3>Step 4: Open Your App in RStudio</h3>
-    <ol>
-      <li>Open <strong>RStudio</strong> (not R - they're different!)</li>
-      <li>Click <strong>File → Open File...</strong> from the top menu</li>
-      <li>Find your Rolodex App folder and open the file called <code>app.R</code></li>
-    </ol>
-
-    <h3>Step 5: Connect RStudio to Your shinyapps.io Account</h3>
-    <p>You'll need to connect RStudio to your shinyapps.io account just once. Here's how:</p>
-    <ol>
-      <li>Go to your <strong><a href="https://www.shinyapps.io/admin/#/dashboard" target="_blank">shinyapps.io dashboard</a></strong></li>
-      <li>Click on your name in the top-right corner, then select <strong>Tokens</strong></li>
-      <li>Click <strong>Show</strong> next to "Token" and then <strong>Show Secret</strong></li>
-      <li>Click <strong>Copy to clipboard</strong></li>
-      <li>Back in RStudio, paste this into the Console (the bottom-left panel) and press Enter</li>
-    </ol>
-    <div class="tip">
-      <strong>💡 Need more detailed help?</strong> Check out this complete step-by-step guide: <a href="https://shiny.posit.co/r/articles/share/shinyapps/" target="_blank">Deploying to shinyapps.io</a>
-    </div>
-
-    <h3>Step 6: Publish Your App! 🚀</h3>
-    <p>This is the exciting part - and it's super easy!</p>
-    <ol>
-      <li>Make sure your <code>app.R</code> file is open in RStudio</li>
-      <li>Look for a <strong>blue "Publish" button</strong> in the top-right corner of the code editor</li>
-      <li>Click it!</li>
-      <li>A window will pop up - just click <strong>Publish</strong> again</li>
-      <li>Wait a minute or two while your app uploads (you'll see a progress bar)</li>
-    </ol>
-    
-    <div class="encouragement">
-      <strong>🎉 Done!</strong> Your app is now live on the internet! You'll get a link that looks like <code>https://yourname.shinyapps.io/rolodex/</code> that you can share with anyone!
-    </div>
-  </div>
-
-  <h2>🐳 Alternative: Deploy with Docker (More Advanced)</h2>
-  <div class="instruction-box">
-    <p>If you prefer Docker or need more control, you can also deploy using Docker Hub and Google Cloud Run:</p>
-    
-    <div class="video-section">
-      <h3>📺 Docker Video Tutorials:</h3>
-      <ul>
-        <li><a href="https://www.youtube.com/watch?v=tJsrv_kPh30" target="_blank">How to push your app to DockerHub</a></li>
-        <li><a href="https://www.youtube.com/watch?v=7CvD6oHmYxU" target="_blank">Deploy your app on Google Cloud Run</a></li>
-      </ul>
-      <p><em>Note: You'll need a free Docker Hub account and a Google Cloud account for this option.</em></p>
-    </div>
+    <p>Open your browser and go to:</p>
+    <p><a href="http://localhost:1222" target="_blank">http://localhost:1222</a></p>
+    <p>If Docker Desktop is running, your app will load! 🎊</p>
   </div>
 
   <div class="encouragement" style="margin-top: 40px;">
-    <strong>🎓 You Did It!</strong> See? Not so scary after all! You just built and deployed a web application - that's genuinely impressive, even if it felt simple. Pat yourself on the back! 👏
+    <strong>👏 Congrats!</strong> You just built and ran a web app on your own computer. Pretty awesome!
   </div>
-
 </body>
 </html>

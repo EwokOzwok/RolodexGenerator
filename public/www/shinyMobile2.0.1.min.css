@@ -2538,7 +2538,7 @@ html.device-full-viewport,html.device-full-viewport body {
 }
 
 .tabbar a,.tabbar-icons a {
-    color: #46166B
+    color: #123456
 }
 
 .tabbar .link,.tabbar-icons .link {
@@ -3206,7 +3206,7 @@ html.device-full-viewport,html.device-full-viewport body {
 }
 
 .block-footer {
-    color: var(--f7-block-footer-text-color);
+    color: #123456;
     font-size: var(--f7-block-footer-font-size);
     margin-top: var(--f7-block-footer-margin);
     margin-bottom: var(--f7-block-margin-vertical)
@@ -6756,7 +6756,7 @@ html.with-modal-sheet-push-closing .dark .framework7-root>.view:after,html.with-
     color: var(--f7-toast-text-color);
     font-size: var(--f7-toast-font-size);
     box-sizing: border-box;
-    background-color: var(--f7-toast-bg-color);
+    background-color: #5B2F7B;
     opacity: 0
 }
 
@@ -9736,7 +9736,7 @@ html.with-modal-popup-push-closing .framework7-root>.panel-in.panel-push.panel-r
     margin-bottom: var(--f7-card-margin-vertical);
     margin-left: calc(var(--f7-card-margin-horizontal) + var(--f7-safe-area-left));
     margin-right: calc(var(--f7-card-margin-horizontal) + var(--f7-safe-area-right));
-    color: var(--f7-card-text-color)
+    color: #123456
 }
 
 .card .block,.card .list {
@@ -10350,7 +10350,7 @@ input[type=date]:-webkit-autofill-and-obscured,input[type=date]:autofill,input[t
 .list input[type=date],.list input[type=datetime-local],.list input[type=email],.list input[type=month],.list input[type=number],.list input[type=password],.list input[type=search],.list input[type=tel],.list input[type=text],.list input[type=time],.list input[type=url],.list select {
     width: 100%;
     height: var(--f7-input-height);
-    color: var(--f7-input-text-color);
+    color: #123456;
     font-size: var(--f7-input-font-size);
     background-color: var(--f7-input-bg-color,transparent);
     padding-left: var(--f7-input-padding-left);
@@ -20457,4 +20457,38 @@ li.accordion-item {
 div.subnavbar {
     background: #5B2F7B !important;
 
+}
+
+
+/* Base wrapper */
+.resource-select-wrapper {
+  background-color: #5B2F7B !important;
+  color: #ffffff;
+  border-radius: 8px;
+  margin-top: -20px;
+}
+
+/* Text color inside the select */
+.resource-select-wrapper .select-input,
+.resource-select-wrapper select,
+.resource-select-wrapper .item-input,
+.resource-select-wrapper .input {
+  color: #123456 !important;
+}
+
+/* Full box background for select wrapper */
+.resource-select-wrapper .item-inner,
+.resource-select-wrapper .item-content,
+.resource-select-wrapper .item-input-wrap {
+  background-color: #46166B !important;
+  border-radius: 8px;
+}
+
+/* Reset the select background so wrapper shows through */
+.resource-select-wrapper select {
+  background-color: #46166B !important;
+}
+
+#install-button {
+  color: #123456 !important;  /* text color */
 }
