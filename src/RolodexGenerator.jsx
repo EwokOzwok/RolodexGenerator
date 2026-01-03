@@ -1242,7 +1242,7 @@ const downloadApp = async () => {
 
         <div className="text-center">
           <a
-            href="https://cliniciansfirst.org/contact"
+            href="https://cliniciansfirst.org/rolodex"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
