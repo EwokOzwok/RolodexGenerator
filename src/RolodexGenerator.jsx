@@ -540,7 +540,7 @@ const downloadApp = async () => {
             </p>
             <p className="mt-3 text-gray-600 text-lg font-light">
               <a 
-                href="https://ualbanyprojectaccess.shinyapps.io/rolodex" 
+                href="https://cliniciansfirst.online" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="text-blue-500 hover:underline"
