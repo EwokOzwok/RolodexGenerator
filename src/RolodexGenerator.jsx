@@ -16,6 +16,10 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
 const RolodexGenerator = () => {
+  // CF Ad Modal Vars:
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [countdown, setCountdown] = useState(30);
+
   const [currentStep, setCurrentStep] = useState(1);
   const [csvData, setCsvData] = useState(null);
   const [csvColumns, setCsvColumns] = useState([]);
@@ -401,7 +405,24 @@ const RolodexGenerator = () => {
   `;
   };
 
-  const downloadApp = async () => {
+const downloadApp = async () => {
+  // Show modal and start countdown
+  setShowDownloadModal(true);
+  setCountdown(30);
+  
+  // Countdown logic
+  const countdownInterval = setInterval(() => {
+    setCountdown((prev) => {
+      if (prev <= 1) {
+        clearInterval(countdownInterval);
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
+  
+  // Wait 30 seconds before downloading
+  setTimeout(async () => {
     try {
       setIsDownloading(true); // start loading
       
@@ -476,14 +497,15 @@ const RolodexGenerator = () => {
       // Generate and trigger download
       const content = await zip.generateAsync({ type: "blob" });
       saveAs(content, "Rolodex_App.zip");
-    } catch (err) {
-      console.error("Error generating ZIP:", err);
-      alert("Something went wrong while preparing your app.");
-    } finally {
-      setIsDownloading(false);
-    }
+      } catch (err) {
+        console.error("Error generating ZIP:", err);
+        alert("Something went wrong while preparing your app.");
+      } finally {
+        setIsDownloading(false);
+        setShowDownloadModal(false);
+      }
+    }, 30000);
   };
-
 
 
   const steps = [
@@ -496,11 +518,21 @@ const RolodexGenerator = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Fixed Logo */}
+      <div className="fixed top-4 left-4 z-50">
+        <a href="https://cliniciansfirst.org" target="_blank" rel="noopener noreferrer">
+          <img 
+            src="/rolodex_generator/cf_report_logo.jpg" 
+            alt="Logo" 
+            className="h-12 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+          />
+        </a>
+      </div>
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-5xl mx-auto px-6 py-8">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+            <h1 className="mt-16 text-3xl font-bold text-gray-900 tracking-tight">
               Resource Rolodex Generator
             </h1>
             <p className="mt-3 text-gray-600 text-lg font-light">
@@ -599,7 +631,7 @@ const RolodexGenerator = () => {
                   Start by uploading a CSV file with your data. The first row should contain column headers.
                 </p>
                 <p className="text-sm text-blue-600 underline">
-                  <a href="rolodex_generator/rolodex.csv" download>
+                  <a href="/rolodex_generator/rolodex.csv" download>
                     Download example CSV (use same columns and coding)
                   </a>
                 </p>
@@ -679,7 +711,6 @@ const RolodexGenerator = () => {
                     </table>
                   </div>
                 </div>
-
                 {/* Column Mapping */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
@@ -1152,6 +1183,91 @@ const RolodexGenerator = () => {
           )}
         </div>
       </div>
+      {/* Download Modal with Ad */}
+{showDownloadModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      {/* Timer Section */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-8 text-center rounded-t-2xl">
+        <div className="inline-flex items-center justify-center w-20 h-20 bg-white bg-opacity-20 rounded-full mb-4">
+          <Download className="w-10 h-10" />
+        </div>
+        <h3 className="text-2xl font-bold mb-2">Preparing Your Download</h3>
+        <p className="text-blue-100 mb-4">Your app will download automatically in:</p>
+        <div className="text-6xl font-bold mb-2">{countdown}</div>
+        <p className="text-sm text-blue-100">seconds</p>
+      </div>
+
+      {/* Ad Section */}
+      <div className="p-8 bg-gradient-to-br from-blue-50 to-white">
+        <div className="text-center mb-6">
+          <img 
+            src="/rolodex_generator/cf_report_logo.jpg" 
+            alt="CliniciansFirst Logo" 
+            className="h-16 w-auto mx-auto mb-4"
+          />
+          <h4 className="text-2xl font-bold text-gray-900 mb-3">
+            Need Help Getting Your App Up and Running?
+          </h4>
+          <p className="text-xl text-blue-600 font-semibold mb-2">
+            CliniciansFirst Can Help—Without Breaking the Bank
+          </p>
+        </div>
+
+        <div className="bg-white rounded-xl p-6 shadow-md border-2 border-blue-100 mb-6">
+          <div className="flex items-start gap-4 mb-4">
+            <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <h5 className="font-bold text-gray-900 mb-1">We're Not Just Coders—We're Clinicians Who Code</h5>
+              <p className="text-gray-600">We understand your workflow because we live it. Our team builds custom tech and AI tools specifically designed for clinicians.</p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+            <div>
+              <h5 className="font-bold text-gray-900 mb-1">DIY? We've Got You Covered Too</h5>
+              <p className="text-gray-600">Your download includes a detailed README with video instructions for deploying the app yourself—completely free!</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center">
+          <a
+            href="https://cliniciansfirst.org/contact"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+          >
+            Get Expert Help Today
+            <ArrowRight className="w-5 h-5" />
+          </a>
+          <p className="text-sm text-gray-500 mt-3">
+            Free consultation • Affordable pricing • Clinician-focused support
+          </p>
+        </div>
+      </div>
+
+      {/* Close button */}
+      <button
+        onClick={() => setShowDownloadModal(false)}
+        className="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+)}
     </div>
   );
 };
