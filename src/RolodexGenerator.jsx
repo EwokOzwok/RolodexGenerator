@@ -336,7 +336,8 @@ const RolodexGenerator = () => {
               tagList(
                 if ("Address" %in% names(items)) items[i, "Address"],
                 if ("Phone" %in% names(items)) br(),
-                if ("Phone" %in% names(items)) f7Link(href = paste0(items[i, "Phone"]), label = "Call Now"),
+                if ("Phone" %in% names(items) && startsWith(items[i, "Phone"], "tel:")) 
+                  f7Link(href = items[i, "Phone"], label = "Call Now"),
                 if ("Hours" %in% names(items)) br(),
                 if ("Hours" %in% names(items)) items[i, "Hours"],
                 if ("Website" %in% names(items)) br(),
