@@ -1,0 +1,73 @@
+<!-- SHINY APP FULL-WIDTH EMBED -->
+<style>
+/* Kill WordPress theme spacing */
+#page,
+#content,
+.site-content,
+.entry-content,
+.wp-block-group,
+.wp-site-blocks {
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+}
+
+/* Container */
+.shiny-native-wrapper {
+  width: 100% !important;
+  max-width: 1400px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+
+/* Iframe styling */
+.shiny-native-iframe {
+  width: 100% !important;
+  height: 100vh !important;
+  min-height: 900px !important;
+  border: none !important;
+  display: block !important;
+  background: #ffffff !important;
+  border-radius: 14px !important;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08) !important;
+  overflow: hidden !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .shiny-native-iframe {
+    min-height: 100vh !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Hide WP junk that breaks immersion (optional) */
+header,
+footer,
+.wp-block-post-title {
+  display: none !important;
+}
+</style>
+
+<div class="shiny-native-wrapper">
+  <iframe
+    class="shiny-native-iframe"
+    src="https://ewokozwok.shinyapps.io/TestRolodex/"
+    loading="lazy"
+    allowfullscreen>
+  </iframe>
+</div>
+
+<script>
+/* Force iframe to fill viewport cleanly */
+(function () {
+  function resizeShinyIframe() {
+    const iframe = document.querySelector('.shiny-native-iframe');
+    if (!iframe) return;
+    iframe.style.height = window.innerHeight + 'px';
+  }
+  window.addEventListener('resize', resizeShinyIframe);
+  resizeShinyIframe();
+})();
+</script>

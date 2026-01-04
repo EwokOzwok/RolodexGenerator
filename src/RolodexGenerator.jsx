@@ -440,9 +440,16 @@ const downloadApp = async () => {
       const dockerFile = await fetch("/Dockerfile.txt").then(r => r.text());
       folder.file("Dockerfile.txt", dockerFile);
 
+      // 2.1 Add embed-app instructions .txt file
+      const embedAppInstructions = await fetch("/embed-app.txt").then(r => r.text());
+      folder.file("embed-app.txt", embedAppInstructions);
+      
+
       // 3. Add README
       const readmeContent = await fetch("/IMPORTANT - README.html").then(r => r.text());
       folder.file("IMPORTANT - README.html", readmeContent);
+
+      
 
       // 4. Add www/ folder contents
       const wwwFolder = folder.folder("www");
