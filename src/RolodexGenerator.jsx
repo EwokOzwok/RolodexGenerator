@@ -434,21 +434,21 @@ const downloadApp = async () => {
       folder.file("app.R", code);
 
       // 2. Add Docker Build.txt & Dockerfile.txt
-      const dockerBuild = await fetch("/rolodex_generator/Docker Build.txt").then(r => r.text());
+      const dockerBuild = await fetch("/Docker Build.txt").then(r => r.text());
       folder.file("Docker Build.txt", dockerBuild);
 
-      const dockerFile = await fetch("/rolodex_generator/Dockerfile.txt").then(r => r.text());
+      const dockerFile = await fetch("/Dockerfile.txt").then(r => r.text());
       folder.file("Dockerfile.txt", dockerFile);
 
       // 3. Add README
-      const readmeContent = await fetch("/rolodex_generator/IMPORTANT - README.html").then(r => r.text());
+      const readmeContent = await fetch("/IMPORTANT - README.html").then(r => r.text());
       folder.file("IMPORTANT - README.html", readmeContent);
 
       // 4. Add www/ folder contents
       const wwwFolder = folder.folder("www");
 
       // --- CSS with color replacements ---
-      const cssContent = await fetch("/rolodex_generator/www/shinyMobile2.0.1.min.css").then(r => r.text());
+      const cssContent = await fetch("/www/shinyMobile2.0.1.min.css").then(r => r.text());
       const normalizedConfig = {
         ...config,
         primaryColor: normalizeHex(config.primaryColor),
@@ -469,10 +469,10 @@ const downloadApp = async () => {
       const topLevelFiles = ["manifest.json", "service-worker.js"];
       for (const file of topLevelFiles) {
         try {
-          const data = await fetch(`/rolodex_generator/www/${file}`).then(r => r.blob());
+          const data = await fetch(`/www/${file}`).then(r => r.blob());
           wwwFolder.file(file, data);
         } catch (err) {
-          console.warn(`Could not load /rolodex_generator/www/${file}:`, err);
+          console.warn(`Could not load /www/${file}:`, err);
         }
       }
 
@@ -487,10 +487,10 @@ const downloadApp = async () => {
       ];
       for (const file of iconFiles) {
         try {
-          const data = await fetch(`/rolodex_generator/www/icons/${file}`).then(r => r.blob());
+          const data = await fetch(`/www/icons/${file}`).then(r => r.blob());
           iconsFolder.file(file, data);
         } catch (err) {
-          console.warn(`Could not load /rolodex_generator/www/icons/${file}:`, err);
+          console.warn(`Could not load /www/icons/${file}:`, err);
         }
       }
 
@@ -522,7 +522,7 @@ const downloadApp = async () => {
       <div className="fixed top-4 left-4 z-50">
         <a href="https://cliniciansfirst.org" target="_blank" rel="noopener noreferrer">
           <img 
-            src="/rolodex_generator/cf_report_logo.jpg" 
+            src="/cf_report_logo.jpg" 
             alt="Logo" 
             className="h-12 w-auto cursor-pointer hover:opacity-80 transition-opacity"
           />
@@ -631,7 +631,7 @@ const downloadApp = async () => {
                   Start by uploading a CSV file with your data. The first row should contain column headers.
                 </p>
                 <p className="text-sm text-blue-600 underline">
-                  <a href="/rolodex_generator/rolodex.csv" download>
+                  <a href="/rolodex.csv" download>
                     Download example CSV (use same columns and coding)
                   </a>
                 </p>
@@ -1202,7 +1202,7 @@ const downloadApp = async () => {
       <div className="p-8 bg-gradient-to-br from-blue-50 to-white">
         <div className="text-center mb-6">
           <img 
-            src="/rolodex_generator/cf_report_logo.jpg" 
+            src="/cf_report_logo.jpg" 
             alt="CliniciansFirst Logo" 
             className="h-16 w-auto mx-auto mb-4"
           />
