@@ -53,7 +53,7 @@ footer,
 <div class="shiny-native-wrapper">
   <iframe
     class="shiny-native-iframe"
-    src="https://ewokozwok.shinyapps.io/TestRolodex/"
+    src="https://yourname.shinyapps.io/yourAppsName"
     loading="lazy"
     allowfullscreen>
   </iframe>
