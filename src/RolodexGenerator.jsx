@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Upload,
   Download,
@@ -16,6 +16,18 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
 const RolodexGenerator = () => {
+
+  // Welcome Modal
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowWelcomeModal(true);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   // CF Ad Modal Vars:
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [countdown, setCountdown] = useState(30);
@@ -1192,90 +1204,214 @@ const downloadApp = async () => {
         </div>
       </div>
       {/* Download Modal with Ad */}
-{showDownloadModal && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-      {/* Timer Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-8 text-center rounded-t-2xl">
-        <div className="inline-flex items-center justify-center w-20 h-20 bg-white bg-opacity-20 rounded-full mb-4">
-          <Download className="w-10 h-10" />
-        </div>
-        <h3 className="text-2xl font-bold mb-2">Preparing Your Download</h3>
-        <p className="text-blue-100 mb-4">Your app will download automatically in:</p>
-        <div className="text-6xl font-bold mb-2">{countdown}</div>
-        <p className="text-sm text-blue-100">seconds</p>
-      </div>
-
-      {/* Ad Section */}
-      <div className="p-8 bg-gradient-to-br from-blue-50 to-white">
-        <div className="text-center mb-6">
-          <img 
-            src="/cf_report_logo.jpg" 
-            alt="CliniciansFirst Logo" 
-            className="h-16 w-auto mx-auto mb-4"
-          />
-          <h4 className="text-2xl font-bold text-gray-900 mb-3">
-            Need Help Getting Your App Up and Running?
-          </h4>
-          <p className="text-xl text-blue-600 font-semibold mb-2">
-            CliniciansFirst Can Help—Without Breaking the Bank
-          </p>
-        </div>
-
-        <div className="bg-white rounded-xl p-6 shadow-md border-2 border-blue-100 mb-6">
-          <div className="flex items-start gap-4 mb-4">
-            <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+    {showDownloadModal && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          {/* Timer Section */}
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-8 text-center rounded-t-2xl">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-white bg-opacity-20 rounded-full mb-4">
+              <Download className="w-10 h-10" />
             </div>
-            <div>
-              <h5 className="font-bold text-gray-900 mb-1">We're Not Just Coders—We're Clinicians Who Code</h5>
-              <p className="text-gray-600">We understand your workflow because we live it. Our team builds custom tech and AI tools specifically designed for clinicians.</p>
+            <h3 className="text-2xl font-bold mb-2">Preparing Your Download</h3>
+            <p className="text-blue-100 mb-4">Your app will download automatically in:</p>
+            <div className="text-6xl font-bold mb-2">{countdown}</div>
+            <p className="text-sm text-blue-100">seconds</p>
+          </div>
+
+          {/* Ad Section */}
+          <div className="p-8 bg-gradient-to-br from-blue-50 to-white">
+            <div className="text-center mb-6">
+              <img 
+                src="/cf_report_logo.jpg" 
+                alt="CliniciansFirst Logo" 
+                className="h-16 w-auto mx-auto mb-4"
+              />
+              <h4 className="text-2xl font-bold text-gray-900 mb-3">
+                Need Help Getting Your App Up and Running?
+              </h4>
+              <p className="text-xl text-blue-600 font-semibold mb-2">
+                CliniciansFirst Can Help—Without Breaking the Bank
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 shadow-md border-2 border-blue-100 mb-6">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h5 className="font-bold text-gray-900 mb-1">We're Not Just Coders—We're Clinicians Who Code</h5>
+                  <p className="text-gray-600">We understand your workflow because we live it. Our team builds custom tech and AI tools specifically designed for clinicians.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <div>
+                  <h5 className="font-bold text-gray-900 mb-1">DIY? We've Got You Covered Too</h5>
+                  <p className="text-gray-600">Your download includes a detailed README with video instructions for deploying the app yourself—completely free!</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <a
+                href="https://cliniciansfirst.org/rolodex"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                Get Expert Help Today
+                <ArrowRight className="w-5 h-5" />
+              </a>
+              <p className="text-sm text-gray-500 mt-3">
+                Free consultation • Affordable pricing • Clinician-focused support
+              </p>
             </div>
           </div>
 
-          <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-            </div>
-            <div>
-              <h5 className="font-bold text-gray-900 mb-1">DIY? We've Got You Covered Too</h5>
-              <p className="text-gray-600">Your download includes a detailed README with video instructions for deploying the app yourself—completely free!</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="text-center">
-          <a
-            href="https://cliniciansfirst.org/rolodex"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+          {/* Close button */}
+          <button
+            onClick={() => setShowDownloadModal(false)}
+            className="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors"
           >
-            Get Expert Help Today
-            <ArrowRight className="w-5 h-5" />
-          </a>
-          <p className="text-sm text-gray-500 mt-3">
-            Free consultation • Affordable pricing • Clinician-focused support
-          </p>
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
       </div>
+    )}
+    {/* Welcome Modal */}
+    {showWelcomeModal && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+          {/* Header Section */}
+          <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-8 text-center rounded-t-2xl">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-white bg-opacity-20 rounded-full mb-4">
+              <FileText className="w-10 h-10" />
+            </div>
+            <h3 className="text-2xl font-bold mb-2">Welcome to the Resource Rolodex Generator!</h3>
+            <p className="text-blue-100">We're here to help you every step of the way</p>
+          </div>
 
-      {/* Close button */}
-      <button
-        onClick={() => setShowDownloadModal(false)}
-        className="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors"
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-  </div>
-)}
+          {/* Content Section */}
+          <div className="p-8 bg-gradient-to-br from-purple-50 to-white">
+            {/* YouTube Video Section */}
+            <div className="bg-white rounded-xl p-6 shadow-md border-2 border-purple-100 mb-6">
+              <div className="text-center mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-3">
+                  <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
+                </div>
+                <h4 className="text-xl font-bold text-gray-900 mb-2">
+                  📺 Watch the Step-by-Step Walkthrough
+                </h4>
+                <p className="text-gray-600 mb-4">
+                  We created a complete YouTube tutorial to help you build and deploy your Resource Rolodex—<span className="font-semibold text-purple-600">completely FREE!</span>
+                </p>
+                <a
+                  href="https://www.youtube.com/watch?v=YOUR_VIDEO_ID"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-full font-bold hover:bg-red-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                  Watch Tutorial Now
+                </a>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="relative my-8">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-white text-gray-500 font-medium">OR</span>
+              </div>
+            </div>
+
+            {/* Professional Help Section */}
+            <div className="text-center mb-6">
+              <img 
+                src="/cf_report_logo.jpg" 
+                alt="CliniciansFirst Logo" 
+                className="h-16 w-auto mx-auto mb-4"
+              />
+              <h4 className="text-xl font-bold text-gray-900 mb-2">
+                Need Affordable Help Getting Your Rolodex Across the Finish Line?
+              </h4>
+              <p className="text-lg text-blue-600 font-semibold mb-4">
+                CliniciansFirst Can Help—Without Breaking the Bank
+              </p>
+            </div>
+
+            {/* <div className="bg-white rounded-xl p-6 shadow-md border-2 border-blue-100 mb-6">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h5 className="font-bold text-gray-900 mb-1">We're Not Just Coders—We're Clinicians Who Code</h5>
+                  <p className="text-gray-600">We understand your workflow because we live it. Our team builds custom tech and AI tools specifically designed for clinicians.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <div>
+                  <h5 className="font-bold text-gray-900 mb-1">DIY? We've Got You Covered Too</h5>
+                  <p className="text-gray-600">Your download includes a detailed README with video instructions for deploying the app yourself—completely free!</p>
+                </div>
+              </div>
+            </div> */}
+
+            <div className="text-center">
+              <a
+                href="https://cliniciansfirst.org/rolodex"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                Get Expert Help Today
+                <ArrowRight className="w-5 h-5" />
+              </a>
+              <p className="text-sm text-gray-500 mt-3">
+                Free consultation • Affordable pricing • Clinician-focused support
+              </p>
+            </div>
+          </div>
+
+          {/* Close button */}
+          <button
+            onClick={() => setShowWelcomeModal(false)}
+            className="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    )}
+
+
     </div>
   );
 };
