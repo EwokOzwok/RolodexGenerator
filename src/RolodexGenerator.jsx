@@ -337,31 +337,38 @@ const RolodexGenerator = () => {
       items <- subset(resources, Type == input$category)
       if (nrow(items) == 0) return(NULL)
       f7Card(
-      br(),
-      f7Accordion(
-        id = paste0("acc_", gsub("\\\\s", "_", input$category)),
-        multiCollapse = TRUE,
-        lapply(seq_len(nrow(items)), function(i) {
-          f7AccordionItem(
-            title = items[i, "Name"],
-            f7Block(
-              tagList(
-                if ("Address" %in% names(items)) items[i, "Address"],
-                if ("Phone" %in% names(items)) br(),
-                if ("Phone" %in% names(items) && startsWith(items[i, "Phone"], "tel:")) 
-                  f7Link(href = items[i, "Phone"], label = "Call Now"),
-                if ("Hours" %in% names(items)) br(),
-                if ("Hours" %in% names(items)) items[i, "Hours"],
-                if ("Website" %in% names(items)) br(),
-                if ("Website" %in% names(items)) f7Link(href = items[i, "Website"], label = items[i, "Website"]),
-                br(), br(),
-                if ("Info" %in% names(items)) items[i, "Info"]
-              )
+        br(),
+        f7Accordion(
+          id = paste0("acc_", gsub("\\\\s", "_", input$category)),
+          multiCollapse = TRUE,
+          lapply(seq_len(nrow(items)), function(i) {
+            
+            content <- list()
+            
+            if ("Address" %in% names(items) && nzchar(trimws(items[i, "Address"])))
+              content <- c(content, list(items[i, "Address"], br()))
+            
+            if ("Phone" %in% names(items) && startsWith(items[i, "Phone"], "tel:"))
+              content <- c(content, list(f7Link(href = items[i, "Phone"], label = "Call Now"), br()))
+            
+            if ("Hours" %in% names(items) && nzchar(trimws(items[i, "Hours"])))
+              content <- c(content, list(items[i, "Hours"], br()))
+            
+            if ("Website" %in% names(items) && nzchar(trimws(items[i, "Website"])))
+              content <- c(content, list(f7Link(href = items[i, "Website"], label = items[i, "Website"]), br()))
+            
+            if ("Info" %in% names(items) && nzchar(trimws(items[i, "Info"])))
+              content <- c(content, list(items[i, "Info"]))
+            
+            content <- c(content, list(br(), br()))
+            
+            f7AccordionItem(
+              title = items[i, "Name"],
+              f7Block(do.call(tagList, content))
             )
-          )
-        })
-      ),
-      br(),
+          })
+        ),
+        br(),
       )
     })
 
