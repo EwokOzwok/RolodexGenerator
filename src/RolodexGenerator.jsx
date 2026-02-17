@@ -540,7 +540,7 @@ const downloadApp = async () => {
     <div className="min-h-screen bg-gray-50">
       {/* Fixed Logo */}
       <div className="fixed top-4 left-4 z-50">
-        <a href="https://cliniciansfirst.org" target="_blank" rel="noopener noreferrer">
+        <a href="https://cliniciansfirst.org/Rolodex" target="_blank" rel="noopener noreferrer">
           <img 
             src="/cf_report_logo.jpg" 
             alt="Logo" 
@@ -1291,7 +1291,7 @@ const downloadApp = async () => {
     {/* Welcome Modal */}
     {showWelcomeModal && (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto relative">
           {/* Header Section */}
           <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-8 text-center rounded-t-2xl">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-white bg-opacity-20 rounded-full mb-4">
@@ -1318,7 +1318,7 @@ const downloadApp = async () => {
                   We created a complete YouTube tutorial to help you build and deploy your Resource Rolodex—<span className="font-semibold text-purple-600">completely FREE!</span>
                 </p>
                 <a
-                  href="https://www.youtube.com/watch?v=YOUR_VIDEO_ID"
+                  href="https://youtu.be/iJQsLUSd3PM"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-full font-bold hover:bg-red-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
