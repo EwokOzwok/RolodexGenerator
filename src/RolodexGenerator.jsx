@@ -210,7 +210,7 @@ const RolodexGenerator = () => {
     tags$link(rel = "icon", type = "image/png", href = "icons/favicon.ico"),
     
     # Manifest
-    tags$link(rel = "manifest", href = "manifest.json"),
+    tags$link(rel = "manifest", href = "manifest.webmanifest"),
     
     # Service Worker
     tags$script(HTML("
@@ -403,7 +403,7 @@ const RolodexGenerator = () => {
                 tagList(
                   ${item.header ? `h3("${item.header}"),` : ''}
                   ${item.text ? `p("${item.text}"),` : ''}
-                  ${item.embedVideo && item.embedCode ? `HTML('<center>${item.embedCode.replace(/'/g, "\\'")}'</center>)` : ''}
+                  ${item.embedVideo && item.embedCode ? `HTML('<center>${item.embedCode.replace(/'/g, "\\'").replace(/width="[^"]*"/gi, 'width="auto"').replace(/height="[^"]*"/gi, 'height="auto"')}</center>')` : ''}
                 )
               )
             )${i < config.accordionItems.length - 1 ? ',' : ''}`).join('')}
@@ -486,7 +486,7 @@ const downloadApp = async () => {
       wwwFolder.file("shinyMobile2.0.1.min.css", modifiedCss);
 
       // --- Other top-level www files ---
-      const topLevelFiles = ["manifest.json", "service-worker.js"];
+      const topLevelFiles = ["manifest.webmanifest", "service-worker.js"];
       for (const file of topLevelFiles) {
         try {
           const data = await fetch(`/www/${file}`).then(r => r.blob());

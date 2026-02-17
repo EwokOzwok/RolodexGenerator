@@ -1,16 +1,16 @@
 {
   "name": "Resource Rolodex",
-  "short_name": "Resource Rolodex",
-  "description": "Resource Rolodex",
+  "short_name": "Rolodex",
+  "description": "This is the Resource Rolodex!",
   "lang": "en-US",
-  "start_url": "/",
+  "start_url": "https://yourname.shinyapps.io/Rolodex/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "icons": [
     {
-      "src": "icons/icon-144.png",
-      "sizes": "144x144"
+      "src": "icons/apple-touch-icon.png",
+      "sizes": "512x512"
     }
   ],
   "shortcuts": [

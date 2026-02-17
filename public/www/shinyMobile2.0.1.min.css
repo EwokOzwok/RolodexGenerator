@@ -20494,6 +20494,7 @@ div.subnavbar {
 }
 
 
+
 .ios .toolbar-inner {
   display: flex !important;
   width: 80% !important;
@@ -20508,4 +20509,30 @@ div.subnavbar {
   justify-content: center !important;
   align-items: center !important;
   box-sizing: border-box !important;
+}
+
+/* Only apply in standalone PWA mode */
+@media all and (display-mode: standalone) {
+  .ios .view,
+  .ios .page {
+    height: 100dvh !important;
+    overflow: hidden !important;
+  }
+  
+  .ios .page-content {
+    padding-top: 20px !important; /* Add some breathing room below navbar */
+    padding-bottom: calc(env(safe-area-inset-bottom) + 50px) !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+  }
+  
+  .ios .toolbar-bottom {
+    padding-bottom: env(safe-area-inset-bottom) !important;
+  }
+  
+  /* Add spacing between navbar and first card/block */
+  .ios .page-content > .block:first-child,
+  .ios .page-content > .card:first-child {
+    margin-top: 50px !important;
+  }
 }
