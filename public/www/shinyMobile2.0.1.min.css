@@ -20492,3 +20492,20 @@ div.subnavbar {
 #install-button {
   color: #123456 !important;  /* text color */
 }
+
+
+.ios .toolbar-inner {
+  display: flex !important;
+  width: 80% !important;
+  overflow: hidden !important;
+}
+
+.ios .toolbar-inner .tab-link {
+  flex: 1 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+}

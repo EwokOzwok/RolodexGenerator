@@ -403,7 +403,7 @@ const RolodexGenerator = () => {
                 tagList(
                   ${item.header ? `h3("${item.header}"),` : ''}
                   ${item.text ? `p("${item.text}"),` : ''}
-                  ${item.embedVideo && item.embedCode ? `HTML('${item.embedCode.replace(/'/g, "\\'")}')` : ''}
+                  ${item.embedVideo && item.embedCode ? `HTML('<center>${item.embedCode.replace(/'/g, "\\'")}'</center>)` : ''}
                 )
               )
             )${i < config.accordionItems.length - 1 ? ',' : ''}`).join('')}
@@ -1318,7 +1318,7 @@ const downloadApp = async () => {
                   We created a complete YouTube tutorial to help you build and deploy your Resource Rolodex—<span className="font-semibold text-purple-600">completely FREE!</span>
                 </p>
                 <a
-                  href="https://youtu.be/iJQsLUSd3PM"
+                  href="https://youtu.be/UunCMqTIGLs"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-full font-bold hover:bg-red-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
