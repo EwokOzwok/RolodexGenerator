@@ -2411,9 +2411,9 @@ html.device-full-viewport,html.device-full-viewport body {
 
 @supports ((-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))) {
     .ios-translucent-bars .toolbar {
-        background-color: rgba(91, 47, 123, var(--f7-bars-translucent-opacity));
+        background-color:rgba(#5B2F7B,var(--f7-bars-bg-color-rgb)),var(--f7-bars-translucent-opacity));
         -webkit-backdrop-filter: saturate(180%) blur(var(--f7-bars-translucent-blur));
-        backdrop-filter: saturate(180%) blur(var(--f7-bars-translucent-blur));
+        backdrop-filter: saturate(180%) blur(var(--f7-bars-translucent-blur))
     }
 }
 
@@ -3590,8 +3590,8 @@ html.device-full-viewport,html.device-full-viewport body {
 
 .list .item-inner {
     position: relative;
-    background-color: #5B2F7B;
-    background-color: #5B2F7B;
+    background-color#5B2F7B: ;
+    background-color#5B2F7B: ;
     background-color: #5B2F7B;
     display: flex;
     justify-content: space-between;
@@ -16918,7 +16918,7 @@ label.item-radio.active-state:after {
 .swiper-css-mode.swiper-centered.swiper-horizontal>.swiper-wrapper>.swiper-slide:first-child {
     margin-inline-start:var(--swiper-centered-offset-before)}
 
-.swiper-css-mode.swiper-centered.swiper-horizontal>.swiper-wrapper:before {
+.swiper-css-mode.swiper-centered.swiper-horizontal>.swiper-wrapper: before {
     height:100%;
     min-height: 1px;
     width: var(--swiper-centered-offset-after)
@@ -16927,7 +16927,7 @@ label.item-radio.active-state:after {
 .swiper-css-mode.swiper-centered.swiper-vertical>.swiper-wrapper>.swiper-slide:first-child {
     margin-block-start:var(--swiper-centered-offset-before)}
 
-.swiper-css-mode.swiper-centered.swiper-vertical>.swiper-wrapper:before {
+.swiper-css-mode.swiper-centered.swiper-vertical>.swiper-wrapper: before {
     width:100%;
     min-width: 1px;
     height: var(--swiper-centered-offset-after)
